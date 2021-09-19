@@ -76,7 +76,22 @@ public:
 
     }
     void set_list(us i, string fio, us gn, us m) {this->list[i] = student(fio, gn, m); }
-    //void sort_list() { sort(this->list.begin(), this->list.end()); }
+    void sort_list() { 
+
+        vector<string> t(this->n);
+        for (int i = 0; i < this->n; i++) {
+
+            t[i] = this->list[i].fio;
+
+        }
+        sort(t.begin(), t.end()); 
+        for (int i = 0; i < this->n; i++) {
+
+            this->list[i].fio = t[i];
+
+        }
+
+    }
     ~journal() { list.~vector(); }
 
 };
@@ -95,6 +110,8 @@ int main() {
     }
     cout << j << "\n";
     j[0];
+    j.sort_list();
+    cout << j << "\n";
 
     return 0;
 
