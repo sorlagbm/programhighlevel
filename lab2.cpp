@@ -109,7 +109,7 @@ int main() {
 
     }
     cout << j << "\n";
-    j[0];
+    j[c - 1];
     j.sort_list();
     cout << j << "\n";
 
