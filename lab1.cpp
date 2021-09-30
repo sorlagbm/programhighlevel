@@ -3,6 +3,7 @@
 using namespace std;
 //17
 
+//Перечисляемый тип
 enum Status {
 
     off,
@@ -20,6 +21,7 @@ private:
     short battery_capacity;
     bool isNfc;
     string model_name;
+    // Поле этого перечисляемого типа
     Status status;
 
 public:
@@ -88,6 +90,7 @@ MobileOS::~MobileOS() {
 
 }
 
+//Функция для перевода числа в перечисляемый тип Status(сделана потому, что нельзя просто присвоить число другому перечисляемому типу)
 Status from_int_to_status(int n) {
 
     if (n == 0) return off;
