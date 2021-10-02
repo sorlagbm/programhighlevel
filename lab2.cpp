@@ -38,7 +38,7 @@ public:
     string& get_fio(us c) { return this->list[c].fio; }
     us& get_gn(us c) { return this->list[c].gn; }
     us& get_m(us c) { return this->list[c].m; }
-    journal operator[](int i) { 
+    journal& operator[](int i) { 
         
         cout << "FIO:" << this->list[i].fio << " "
             << "Group Number:" << this->list[i].gn << " "
@@ -46,7 +46,7 @@ public:
         return *this;
 
     }
-    journal operator=(const journal& obj) {
+    journal& operator=(const journal& obj) {
 
         this->list.clear();
         this->list.resize(obj.list.size());
