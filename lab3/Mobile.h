@@ -30,12 +30,12 @@ private:
 
 	}
 public:
-	Mobile(Computer* comp, bool isNFC = true, double wifi_ghz = 0.0,
+	Mobile(CPU* cpu, GPU* gpu, unsigned id, bool isNFC = true, double wifi_ghz = 0.0,
 		unsigned battery_capacity = 0, unsigned os_ver = 0, std::string name = " ") {
 
-		this->cpu = comp->cpu;
-		this->gpu = comp->gpu;
-		this->id = comp->id;
+		this->cpu = cpu;
+		this->gpu = gpu;
+		this->id = id;
 		this->battery_capacity = battery_capacity;
 		this->isNFC = isNFC;
 		this->ver = os_ver;
