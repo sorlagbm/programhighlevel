@@ -1,4 +1,4 @@
-﻿#include <iostream>
+#include <iostream>
 #include "CPU.h"
 #include "GPU.h"
 #include "Mobile.h"
@@ -11,7 +11,7 @@ int main() {
 	GPU* b = new GPU(4, "ggdfgs", "bxcvbxcv");
 	Computer* g = new Computer(a, b, 123);
 	g->get_inf();
-	Mobile* c = new Mobile(g, true, 35, 24, 24, "twertwerb");
+	Mobile* c = new Mobile(a, b, 14, true, 35, 24, 24, "twertwerb");
 	c->get_inf();
 	return 0;
 
