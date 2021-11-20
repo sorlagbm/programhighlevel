@@ -4,7 +4,7 @@
 #include "Mobile.h"
 #include "Computer.h"
 using namespace std;
-
+ 
 int main() {
 
 	CPU* a = new CPU(5, 54, "fasdfasd");
