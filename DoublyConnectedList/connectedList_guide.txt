@@ -1,0 +1,7 @@
+insertFront's realization
+
+1)
+            Head
+    --------------------
+   | prev | data | next | ->
+    --------------------
