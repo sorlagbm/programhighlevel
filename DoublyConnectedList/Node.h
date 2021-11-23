@@ -9,7 +9,7 @@ private:
 
 public:
 
-	~Node() { delete next; }
+	~Node() { delete next; delete prev; }
 	Node() : data{}, next(NODE_NULL),
 		prev(NODE_NULL) {}
 	explicit Node(const T& data, Node<T>* _nextNode = NODE_NULL,
