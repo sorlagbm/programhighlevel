@@ -30,15 +30,16 @@ public:
 
 };
 
-
-
 template<class T>
 void Node<T>::insertAfter(Node<T>* obj) {
-	if (this->next != NODE_NULL) { // ( I )
-		obj->next = this->next; // (2)
-		this->next = obj; // (3)
+	if (this->next != NODE_NULL) {
+		obj->next = this->next;
+		this->next = obj;
+		obj->next->prev = obj
+		
 	}
-	else { // ( II )
+	else {
+		obj->prev = this->next;
 		this->next = obj;
 	}
 }
@@ -50,6 +51,7 @@ Node<T>* Node<T>::deleteAfter(Node<T>* obj) {
 		return NODE_NULL;
 	else {
 		this->next = temp->next;
+		this->next->prev = temp->prev;
 		return temp;
 	}
 }
@@ -59,19 +61,23 @@ void Node<T>::insertBefore(Node<T>* obj) {
 	if (this->prev != NODE_NULL) {
 		obj->prev = this->prev;
 		this->prev = obj;
+		obj->prev->next = obj
+
 	}
-	else { // ( II )
+	else {
+		obj->next = this->prev;
 		this->prev = obj;
 	}
 }
 
 template<class T>
 Node<T>* Node<T>::deleteBerofe(Node<T>* obj) {
-	Node<T>* temp = this->prev;
+	Node<T>* temp = this->next;
 	if (this->prev == NODE_NULL)
 		return NODE_NULL;
 	else {
 		this->prev = temp->prev;
+		this->prev->next = temp->next;
 		return temp;
 	}
 }
