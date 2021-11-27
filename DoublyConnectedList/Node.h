@@ -1,3 +1,5 @@
+#pragma once
+
 template <class T>
 class Node {
 #define NODE_NULL static_cast<Node<T>*>(nullptr)
@@ -9,7 +11,10 @@ private:
 
 public:
 
-	~Node() { delete next; delete prev; }
+	~Node() {
+		delete prev;
+		delete next;
+	}
 	Node() : data{}, next(NODE_NULL),
 		prev(NODE_NULL) {}
 	explicit Node(const T& data, Node<T>* _nextNode = NODE_NULL,
@@ -18,6 +23,7 @@ public:
 		this->next = _nextNode; 
 		this->prev = _prevNode;
 	}
+	Node(const Node<T>*& node) { this = node; }
 
 	T& getData() { return this->data; }
 	Node<T>* nextNode() const { return this->next; }
@@ -65,3 +71,4 @@ void Node<T>::insertBefore(Node<T>* obj) {
 		obj->next = this;
 	}
 }
+
