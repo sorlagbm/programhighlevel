@@ -10,7 +10,7 @@ QString fileName = "";
 
 QFile* file;
 
-vector<Queue> _queue(1);
+Queue _queue;
 
 bool isChanged;
 
@@ -31,18 +31,18 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
         file->read(reinterpret_cast<char*>(&len), sizeof(len));
         q_rows = len;
         ui->tableWidget->setRowCount(q_rows);
-        _queue[0]._resize(q_rows);
+        _queue._resize(q_rows);
 
         for(int i = 0; i < q_rows; i++){
 
-            file->read(reinterpret_cast<char*>(&_queue[0].get_denials(i)), sizeof(_queue[0].get_denials(i)));
+            file->read(reinterpret_cast<char*>(&_queue.get_denials(i)), sizeof(_queue.get_denials(i)));
             size_t _BUF_SZ;
             file->read(reinterpret_cast<char*>(&_BUF_SZ), sizeof(_BUF_SZ));
             char* _BUF = new char[_BUF_SZ];
             file->read(_BUF, _BUF_SZ);
             string g = _BUF;
             qDebug() << QString::fromStdString(g);
-            _queue[0].get_name(i) = QString::fromStdString(g);
+            _queue.get_name(i) = QString::fromStdString(g);
             delete[] _BUF;
 
         }
@@ -50,7 +50,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
         for(int i = 0; i < q_rows; i++){
 
             QTableWidgetItem *name = new QTableWidgetItem;
-            name->setText(_queue[0].get_name(i));
+            name->setText(_queue.get_name(i));
             ui->tableWidget->setItem(i, 0, name);
 
         }
@@ -83,7 +83,7 @@ void MainWindow::on_actionDelete_by_id_triggered(){
 
         ui->tableWidget->clear();
 
-        _queue[ui->tabWidget->currentIndex()]._erase(n);
+        _queue._erase(n);
 
         q_rows--;
 
@@ -92,7 +92,7 @@ void MainWindow::on_actionDelete_by_id_triggered(){
         for(auto i = 0; i < q_rows; i++){
 
             QTableWidgetItem *name = new QTableWidgetItem;
-            name->setText(_queue[ui->tabWidget->currentIndex()].get_name(i));
+            name->setText(_queue.get_name(i));
             ui->tableWidget->setItem(i, 0, name);
 
         }
@@ -110,7 +110,7 @@ void MainWindow::on_actionAdd_User_triggered(){
 
     for(int i = 0; i < q_rows; i++){
 
-        if (text == _queue[ui->tabWidget->currentIndex()].get_name(i)){
+        if (text == _queue.get_name(i)){
 
             QMessageBox::information(this, "Copy!!!", "Copy!!!");
             return;
@@ -119,14 +119,14 @@ void MainWindow::on_actionAdd_User_triggered(){
 
     }
 
-    _queue[ui->tabWidget->currentIndex()].push(text);
+    _queue.push(text);
 
     q_rows++;
 
     ui->tableWidget->setRowCount(q_rows);
 
     QTableWidgetItem *name = new QTableWidgetItem;
-    name->setText(_queue[ui->tabWidget->currentIndex()].get_name(_queue[ui->tabWidget->currentIndex()].get_size() - 1));
+    name->setText(_queue.get_name(_queue.get_size() - 1));
     ui->tableWidget->setItem(q_rows - 1, 0, name);
 
 ;
@@ -141,11 +141,11 @@ MainWindow::~MainWindow(){
 
     for(int i = 0; i < q_rows; i++){
 
-        file->write(reinterpret_cast<char*>(&_queue[ui->tabWidget->currentIndex()].get_denials(i)), 
-                sizeof(_queue[ui->tabWidget->currentIndex()].get_denials(i)));
-        size_t _BUF = _queue[ui->tabWidget->currentIndex()].get_name(i).size() + 1;
+        file->write(reinterpret_cast<char*>(&_queue.get_denials(i)),
+                sizeof(_queue.get_denials(i)));
+        size_t _BUF = _queue.get_name(i).size() + 1;
         file->write(reinterpret_cast<char*>(&_BUF), sizeof(_BUF));
-        file->write(_queue[ui->tabWidget->currentIndex()].get_name(i).toStdString().c_str(), _BUF);
+        file->write(_queue.get_name(i).toStdString().c_str(), _BUF);
 
     }
     file->close();
@@ -164,13 +164,13 @@ void MainWindow::on_actionDenie_triggered(){
 
     unsigned n = text.toUInt();
 
-    _queue[ui->tabWidget->currentIndex()].get_denials(n)++;
+   _queue.get_denials(n)++;
 
-    qDebug() << n << " " << _queue[ui->tabWidget->currentIndex()].get_denials(n) << "\n";
+    qDebug() << n << " " << _queue.get_denials(n) << "\n";
 
-    if (_queue[ui->tabWidget->currentIndex()].get_denials(n) != 3){
+    if (_queue.get_denials(n) != 3){
 
-        for(int i = n; i < _queue[ui->tabWidget->currentIndex()].get_size() - 1;i++ ){
+        for(int i = n; i < _queue.get_size() - 1;i++ ){
 
             swap(_queue[i], _queue[i + 1]);
         }
@@ -180,7 +180,7 @@ void MainWindow::on_actionDenie_triggered(){
         for(auto i = 0; i < q_rows; i++){
 
             QTableWidgetItem *name = new QTableWidgetItem;
-            name->setText(_queue[ui->tabWidget->currentIndex()].get_name(i));
+            name->setText(_queue.get_name(i));
             ui->tableWidget->setItem(i, 0, name);
 
         }
@@ -189,7 +189,7 @@ void MainWindow::on_actionDenie_triggered(){
 
     else{
 
-        _queue[ui->tabWidget->currentIndex()]._erase(n);
+       _queue._erase(n);
 
         q_rows--;
 
@@ -198,7 +198,7 @@ void MainWindow::on_actionDenie_triggered(){
         for(auto i = 0; i < q_rows; i++){
 
             QTableWidgetItem *name = new QTableWidgetItem;
-            name->setText(_queue[ui->tabWidget->currentIndex()].get_name(i));
+            name->setText(_queue.get_name(i));
             ui->tableWidget->setItem(i, 0, name);
 
         }
@@ -217,14 +217,14 @@ void MainWindow::on_action_triggered(){
 
     for(int i = 0; i < q_rows; i++){
 
-        file->write(reinterpret_cast<char*>(&_queue[ui->tabWidget->currentIndex()].get_denials(i)), 
-                sizeof(_queue[ui->tabWidget->currentIndex()].get_denials(i)));
-        size_t _BUF = _queue[ui->tabWidget->currentIndex()].get_name(i).size() + 1;
+        file->write(reinterpret_cast<char*>(&_queue.get_denials(i)),
+                sizeof(_queue.get_denials(i)));
+        size_t _BUF =_queue.get_name(i).size() + 1;
         file->write(reinterpret_cast<char*>(&_BUF), sizeof(_BUF));
-        file->write(_queue[ui->tabWidget->currentIndex()].get_name(i).toStdString().c_str(), _BUF);
-        _BUF = _queue[ui->tabWidget->currentIndex()].get_work(i).size() + 1;
+        file->write(_queue.get_name(i).toStdString().c_str(), _BUF);
+        _BUF = _queue.get_work(i).size() + 1;
         file->write(reinterpret_cast<char*>(&_BUF), sizeof(_BUF));
-        file->write(_queue[ui->tabWidget->currentIndex()].get_work(i).toStdString().c_str(), _BUF);
+        file->write(_queue.get_work(i).toStdString().c_str(), _BUF);
 
     }
 
@@ -244,14 +244,14 @@ void MainWindow::on_action_2_triggered(){
 
         for(int i = 0; i < q_rows; i++){
 
-            file->write(reinterpret_cast<char*>(&_queue.get_denials(i)), 
-                        sizeof(_queue[ui->tabWidget->currentIndex()].get_denials(i)));
-            size_t _BUF = _queue[ui->tabWidget->currentIndex()].get_name(i).size() + 1;
+            file->write(reinterpret_cast<char*>(&_queue.get_denials(i)),
+                        sizeof(_queue.get_denials(i)));
+            size_t _BUF = _queue.get_name(i).size() + 1;
             file->write(reinterpret_cast<char*>(&_BUF), sizeof(_BUF));
-            file->write(_queue[ui->tabWidget->currentIndex()].get_name(i).toStdString().c_str(), _BUF);
-            _BUF = _queue[ui->tabWidget->currentIndex()].get_work(i).size() + 1;
+            file->write(_queue.get_name(i).toStdString().c_str(), _BUF);
+            _BUF = _queue.get_work(i).size() + 1;
             file->write(reinterpret_cast<char*>(&_BUF), sizeof(_BUF));
-            file->write(_queue[ui->tabWidget->currentIndex()].get_work(i).toStdString().c_str(), _BUF);
+            file->write(_queue.get_work(i).toStdString().c_str(), _BUF);
 
         }
 
@@ -267,14 +267,14 @@ void MainWindow::on_action_2_triggered(){
 
         for(int i = 0; i < q_rows; i++){
 
-            file->write(reinterpret_cast<char*>(&_queue[ui->tabWidget->currentIndex()].get_denials(i)), 
-                        sizeof(_queue[ui->tabWidget->currentIndex()].get_denials(i)));
-            size_t _BUF = _queue[ui->tabWidget->currentIndex()].get_name(i).size() + 1;
+            file->write(reinterpret_cast<char*>(&_queue.get_denials(i)),
+                        sizeof(_queue.get_denials(i)));
+            size_t _BUF = _queue.get_name(i).size() + 1;
             file->write(reinterpret_cast<char*>(&_BUF), sizeof(_BUF));
-            file->write(_queue[ui->tabWidget->currentIndex()].get_name(i).toStdString().c_str(), _BUF);
-            _BUF = _queue[ui->tabWidget->currentIndex()].get_work(i).size() + 1;
+            file->write(_queue.get_name(i).toStdString().c_str(), _BUF);
+            _BUF = _queue.get_work(i).size() + 1;
             file->write(reinterpret_cast<char*>(&_BUF), sizeof(_BUF));
-            file->write(_queue[ui->tabWidget->currentIndex()].get_work(i).toStdString().c_str(), _BUF);
+            file->write(_queue.get_work(i).toStdString().c_str(), _BUF);
 
         }
 
@@ -287,7 +287,7 @@ void MainWindow::on_action_2_triggered(){
 
 void MainWindow::on_action_3_triggered(){
 
-    _queue[ui->tabWidget->currentIndex()]._clear();
+    _queue._clear();
     fileName = QFileDialog::getOpenFileName(this, "*.bin");
     MainWindow::setWindowTitle(fileName);
     file = nullptr;
@@ -297,19 +297,19 @@ void MainWindow::on_action_3_triggered(){
     file->read(reinterpret_cast<char*>(&len), sizeof(len));
     q_rows = len;
     ui->tableWidget->setRowCount(q_rows);
-    _queue[ui->tabWidget->currentIndex()]._resize(q_rows);
+    _queue._resize(q_rows);
 
     for(int i = 0; i < q_rows; i++){
 
-        file->read(reinterpret_cast<char*>(&_queue[ui->tabWidget->currentIndex()].get_denials(i)), 
-                sizeof(_queue[ui->tabWidget->currentIndex()].get_denials(i)));
+        file->read(reinterpret_cast<char*>(&_queue.get_denials(i)),
+                sizeof(_queue.get_denials(i)));
         size_t _BUF_SZ;
         file->read(reinterpret_cast<char*>(&_BUF_SZ), sizeof(_BUF_SZ));
         char* _BUF = new char[_BUF_SZ];
         file->read(_BUF, _BUF_SZ);
         string g = _BUF;
         qDebug() << QString::fromStdString(g);
-        _queue[ui->tabWidget->currentIndex()].get_name(i) = QString::fromStdString(g);
+        _queue.get_name(i) = QString::fromStdString(g);
 
         delete[] _BUF;
 
@@ -318,7 +318,7 @@ void MainWindow::on_action_3_triggered(){
     for(int i = 0; i < q_rows; i++){
 
         QTableWidgetItem *name = new QTableWidgetItem;
-        name->setText(_queue[ui->tabWidget->currentIndex()].get_name(i));
+        name->setText(_queue.get_name(i));
         ui->tableWidget->setItem(i, 0, name);
 
     }
@@ -339,11 +339,11 @@ void MainWindow::on_actionNew_file_triggered(){
 
     file = nullptr;
 
-    _queue[ui->tabWidget->currentIndex()]._clear();
+    _queue._clear();
 
     ui->tableWidget->clear();
 
-    _queue[ui->tabWidget->currentIndex()]._resize(0);
+    _queue._resize(0);
 
     MainWindow::setWindowTitle("New File");
 
@@ -358,7 +358,7 @@ void MainWindow::on_actionaddtab_triggered(){
 
     //ui->tabWidget->addTab(new QTableWidget(15, 15), "fdsaf");
     Queue temp;
-     
+
 
 }
 
