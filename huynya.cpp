@@ -1,8 +1,10 @@
 #include "queue.h"
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include "dialog.h"
+#include "saveornot.h"
 
-const unsigned short q_cols = 2;
+const unsigned short q_cols = 1;
 
 unsigned short q_rows = 0;
 
@@ -24,6 +26,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
 
     file = nullptr;
     file = new QFile("exit.tmp");
+    if(file->size() != 0){
     if (QFile::exists("exit.tmp")){
 
         file->open(QIODevice::ReadOnly);
@@ -56,13 +59,17 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
         }
 
         file->close();
+        file = nullptr;
 
     }
 
     else{
         file->write("");
     }
+    }
+    else{
 
+    }
 
 }
 
@@ -112,24 +119,30 @@ void MainWindow::on_actionAdd_User_triggered(){
 
         if (text == _queue.get_name(i)){
 
-            QMessageBox::information(this, "Copy!!!", "Copy!!!");
-            return;
+            Dialog* choise = new Dialog;
+            if (choise->exec() == QDialog::Rejected){
+                return;
+            }
 
         }
 
     }
 
-    _queue.push(text);
+    if(!text.isEmpty()){
 
-    q_rows++;
+        _queue.push(text);
 
-    ui->tableWidget->setRowCount(q_rows);
+        q_rows++;
 
-    QTableWidgetItem *name = new QTableWidgetItem;
-    name->setText(_queue.get_name(_queue.get_size() - 1));
-    ui->tableWidget->setItem(q_rows - 1, 0, name);
+        ui->tableWidget->setRowCount(q_rows);
 
-;
+        QTableWidgetItem *name = new QTableWidgetItem;
+        name->setText(_queue.get_name(_queue.get_size() - 1));
+        ui->tableWidget->setItem(q_rows - 1, 0, name);
+
+    }
+
+
 }
 
 MainWindow::~MainWindow(){
@@ -137,19 +150,27 @@ MainWindow::~MainWindow(){
     file = nullptr;
     file = new QFile("exit.tmp");
     file->open(QIODevice::WriteOnly | QIODevice::Truncate);
-    file->write(reinterpret_cast<char*>(&q_rows), sizeof(q_rows));
+    SaveorNot* exit = new SaveorNot;
+    if(exit->exec() == QDialog::Accepted){
+        file->write(reinterpret_cast<char*>(&q_rows), sizeof(q_rows));
 
-    for(int i = 0; i < q_rows; i++){
+        for(int i = 0; i < q_rows; i++){
 
-        file->write(reinterpret_cast<char*>(&_queue.get_denials(i)),
-                sizeof(_queue.get_denials(i)));
-        size_t _BUF = _queue.get_name(i).size() + 1;
-        file->write(reinterpret_cast<char*>(&_BUF), sizeof(_BUF));
-        file->write(_queue.get_name(i).toStdString().c_str(), _BUF);
+            file->write(reinterpret_cast<char*>(&_queue.get_denials(i)),
+                    sizeof(_queue.get_denials(i)));
+            size_t _BUF = _queue.get_name(i).size() + 1;
+            file->write(reinterpret_cast<char*>(&_BUF), sizeof(_BUF));
+            file->write(_queue.get_name(i).toStdString().c_str(), _BUF);
 
+        }
+        file->close();
+        delete ui;
     }
-    file->close();
-    delete ui;
+    else{
+
+        file->close();
+        delete ui;
+    }
 
 }
 
@@ -211,7 +232,7 @@ void MainWindow::on_action_triggered(){
 
     fileName = QFileDialog::getSaveFileName(this, "Save as");
     MainWindow::setWindowTitle(fileName);
-    if(file == nullptr) file = new QFile(fileName);
+    file = new QFile(fileName);
     file->open(QIODevice::WriteOnly | QIODevice::Truncate);
     file->write(reinterpret_cast<char*>(&q_rows), sizeof(q_rows));
 
@@ -222,9 +243,6 @@ void MainWindow::on_action_triggered(){
         size_t _BUF =_queue.get_name(i).size() + 1;
         file->write(reinterpret_cast<char*>(&_BUF), sizeof(_BUF));
         file->write(_queue.get_name(i).toStdString().c_str(), _BUF);
-        _BUF = _queue.get_work(i).size() + 1;
-        file->write(reinterpret_cast<char*>(&_BUF), sizeof(_BUF));
-        file->write(_queue.get_work(i).toStdString().c_str(), _BUF);
 
     }
 
@@ -249,9 +267,6 @@ void MainWindow::on_action_2_triggered(){
             size_t _BUF = _queue.get_name(i).size() + 1;
             file->write(reinterpret_cast<char*>(&_BUF), sizeof(_BUF));
             file->write(_queue.get_name(i).toStdString().c_str(), _BUF);
-            _BUF = _queue.get_work(i).size() + 1;
-            file->write(reinterpret_cast<char*>(&_BUF), sizeof(_BUF));
-            file->write(_queue.get_work(i).toStdString().c_str(), _BUF);
 
         }
 
@@ -262,6 +277,7 @@ void MainWindow::on_action_2_triggered(){
     else{
 
         file->close();
+
         file->open(QIODevice::WriteOnly | QIODevice::Truncate);
         file->write(reinterpret_cast<char*>(&q_rows), sizeof(q_rows));
 
@@ -272,9 +288,6 @@ void MainWindow::on_action_2_triggered(){
             size_t _BUF = _queue.get_name(i).size() + 1;
             file->write(reinterpret_cast<char*>(&_BUF), sizeof(_BUF));
             file->write(_queue.get_name(i).toStdString().c_str(), _BUF);
-            _BUF = _queue.get_work(i).size() + 1;
-            file->write(reinterpret_cast<char*>(&_BUF), sizeof(_BUF));
-            file->write(_queue.get_work(i).toStdString().c_str(), _BUF);
 
         }
 
@@ -350,6 +363,19 @@ void MainWindow::on_actionNew_file_triggered(){
     ui->tableWidget->setRowCount(0);
 
     q_rows = 0;
+    }
+    else{
+        _queue._clear();
+
+        ui->tableWidget->clear();
+
+        _queue._resize(0);
+
+        MainWindow::setWindowTitle("New File");
+
+        ui->tableWidget->setRowCount(0);
+
+        q_rows = 0;
     }
 
 }
