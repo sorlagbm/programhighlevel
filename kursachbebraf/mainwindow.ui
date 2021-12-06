@@ -2,6 +2,9 @@
 <ui version="4.0">
  <class>MainWindow</class>
  <widget class="QMainWindow" name="MainWindow">
+  <property name="enabled">
+   <bool>true</bool>
+  </property>
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -15,6 +18,9 @@
   </property>
   <widget class="QWidget" name="centralwidget">
    <widget class="QTabWidget" name="tabWidget">
+    <property name="enabled">
+     <bool>true</bool>
+    </property>
     <property name="geometry">
      <rect>
       <x>40</x>
@@ -26,17 +32,23 @@
     <property name="currentIndex">
      <number>0</number>
     </property>
+    <property name="tabsClosable">
+     <bool>true</bool>
+    </property>
     <widget class="QWidget" name="tab">
      <attribute name="title">
       <string>Tab 1</string>
      </attribute>
      <widget class="QTableWidget" name="tableWidget">
+      <property name="enabled">
+       <bool>true</bool>
+      </property>
       <property name="geometry">
        <rect>
-        <x>20</x>
-        <y>20</y>
-        <width>691</width>
-        <height>391</height>
+        <x>0</x>
+        <y>0</y>
+        <width>751</width>
+        <height>421</height>
        </rect>
       </property>
       <property name="contextMenuPolicy">
@@ -91,17 +103,17 @@
   </widget>
   <action name="actionDelete_by_id">
    <property name="text">
-    <string>Delete(by id)</string>
+    <string>Удалить по номеру</string>
    </property>
   </action>
   <action name="actionAdd_User">
    <property name="text">
-    <string>Add User</string>
+    <string>Добавить пользователя</string>
    </property>
   </action>
   <action name="actionDenie">
    <property name="text">
-    <string>Denial</string>
+    <string>Отказ от места</string>
    </property>
   </action>
   <action name="action">
@@ -121,12 +133,12 @@
   </action>
   <action name="actionNew_file">
    <property name="text">
-    <string>New file</string>
+    <string>Новый файл</string>
    </property>
   </action>
   <action name="actionaddtab">
    <property name="text">
-    <string>addtab</string>
+    <string>Добавить вкладку</string>
    </property>
   </action>
  </widget>

@@ -9,6 +9,7 @@ using namespace std;
 
 class Queue{
 private:
+
     struct User{
 
         QString name;
@@ -18,6 +19,7 @@ private:
 
             this->name = name;
             this->denials = denials;
+            this->work = work;
 
         }
 
@@ -25,7 +27,30 @@ private:
     vector<User> _queue;
 
 public:
-    Queue(int i = 0);
+
+    struct FileWork{
+
+        QFile* file;
+        QString fileName;
+        bool isChanged;
+
+        FileWork(QFile* _file = nullptr, QString _fileName = "")
+            :file(_file), fileName(_fileName)
+        {}
+        FileWork(const FileWork& copy){
+
+            this->file = copy.file;
+            this->fileName = copy.fileName;
+            this->isChanged = false;
+
+        }
+
+    }*curFile;
+    QTableWidget* curWid;
+    size_t q_rows;
+
+    Queue(int i = 0, FileWork* _curFile = nullptr, QTableWidget* _curWid = nullptr, size_t _q_rows = 0);
+
     void _erase(int i){
 
         _queue.erase(_queue.begin() + i);
@@ -40,6 +65,7 @@ public:
     void _clear(){
         this->_queue.clear();
     }
+
     User& operator[](int i){return this->_queue[i];}
     QString& get_name(int i) {return this->_queue[i].name;}
     unsigned get_size() const {return this->_queue.size(); }

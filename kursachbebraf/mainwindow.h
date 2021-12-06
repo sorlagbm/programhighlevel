@@ -7,6 +7,7 @@
 #include <QInputDialog>
 #include <QFileDialog>
 #include <QTableWidgetItem>
+#include "startscreen.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -41,7 +42,12 @@ private slots:
 
     void on_tabWidget_currentChanged(int index);
 
+    void on_tableWidget_itemEntered(QTableWidgetItem *item);
+
+    void on_tabWidget_tabCloseRequested(int index);
+
 private:
     Ui::MainWindow *ui;
+    StartScreen* startScreen;
 };
 #endif // MAINWINDOW_H

@@ -13,18 +13,21 @@ SOURCES += \
     main.cpp \
     mainwindow.cpp \
     queue.cpp \
-    saveornot.cpp
+    saveornot.cpp \
+    startscreen.cpp
 
 HEADERS += \
     dialog.h \
     mainwindow.h \
     queue.h \
-    saveornot.h
+    saveornot.h \
+    startscreen.h
 
 FORMS += \
     dialog.ui \
     mainwindow.ui \
-    saveornot.ui
+    saveornot.ui \
+    startscreen.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
