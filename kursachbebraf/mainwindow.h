@@ -50,6 +50,12 @@ private slots:
 
     void on_read_triggered();
 
+    void on_MainWindow_customContextMenuRequested(const QPoint &pos);
+
+    void on_tabWidget_customContextMenuRequested(const QPoint &pos);
+
+    void on_tableWidget_customContextMenuRequested(const QPoint &pos);
+
 private:
     Ui::MainWindow *ui;
     StartScreen* startScreen;

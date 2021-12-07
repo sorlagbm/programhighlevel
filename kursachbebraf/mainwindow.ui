@@ -13,6 +13,9 @@
     <height>562</height>
    </rect>
   </property>
+  <property name="contextMenuPolicy">
+   <enum>Qt::CustomContextMenu</enum>
+  </property>
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
@@ -28,6 +31,9 @@
       <width>891</width>
       <height>451</height>
      </rect>
+    </property>
+    <property name="contextMenuPolicy">
+     <enum>Qt::CustomContextMenu</enum>
     </property>
     <property name="currentIndex">
      <number>0</number>

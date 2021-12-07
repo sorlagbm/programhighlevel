@@ -36,6 +36,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
             MainWindow::setWindowTitle(fileName);
 
             _queue[0] = Queue(0, new Queue::FileWork(new QFile(fileName), fileName), ui->tableWidget, 0);
+            _queue[ui->tabWidget->currentIndex()].curWid->setContextMenuPolicy(Qt::CustomContextMenu);
 
             _queue[ui->tabWidget->currentIndex()].curFile->file->open(QIODevice::ReadOnly);
             unsigned short len;
@@ -123,6 +124,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
         string g = _BUF;
 
         _queue[0] = Queue(0, new Queue::FileWork(new QFile(QString::fromStdString(g)), QString::fromStdString(g)), ui->tableWidget, 0);
+        _queue[0].curWid->setContextMenuPolicy(Qt::CustomContextMenu);
 
         _queue[0].curFile->file->open(QIODevice::ReadOnly);
         unsigned short len;
@@ -181,6 +183,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
             string g = _BUF;
 
             _queue[index] = Queue(0, new Queue::FileWork(new QFile(QString::fromStdString(g)), QString::fromStdString(g)), new QTableWidget(0, 1), 0);
+            _queue[index].curWid->setContextMenuPolicy(Qt::CustomContextMenu);
 
             _queue[index].curFile->file->open(QIODevice::ReadOnly);
             unsigned short len;
@@ -759,6 +762,7 @@ void MainWindow::on_actionaddtab_triggered(){
     tabCount += 1;
     ui->tabWidget->setTabText(ui->tabWidget->count() - 1, "New file");
     _queue[ui->tabWidget->count() - 1].curFile->isChanged = false;
+    _queue[ui->tabWidget->count() - 1].curWid->setContextMenuPolicy(Qt::CustomContextMenu);
 
 }
 
@@ -1143,4 +1147,42 @@ void MainWindow::on_read_triggered(){
     }
     _queue[ui->tabWidget->currentIndex()].curFile->isChanged = true;
 
+}
+
+void MainWindow::on_MainWindow_customContextMenuRequested(const QPoint &pos)
+{
+
+    QMenu menu("contextMenu", this);
+
+    menu.addAction("Удалить по номеру", this, SLOT(on_actionDelete_by_id_triggered()));
+    menu.addAction("Добавить пользователя", this, SLOT(on_actionAdd_User_triggered()));
+    menu.addAction("Извлечь по виду деятельности", this, SLOT(on_read_triggered()));
+    menu.addAction("Отказ от места", this, SLOT(on_actionDenie_triggered()));
+
+    menu.exec(_queue[ui->tabWidget->currentIndex()].curWid->viewport()->mapToGlobal(pos));
+
+}
+
+void MainWindow::on_tabWidget_customContextMenuRequested(const QPoint &pos)
+{
+    QMenu menu("contextMenu", this);
+
+    menu.addAction("Удалить по номеру", this, SLOT(on_actionDelete_by_id_triggered()));
+    menu.addAction("Добавить пользователя", this, SLOT(on_actionAdd_User_triggered()));
+    menu.addAction("Извлечь по виду деятельности", this, SLOT(on_read_triggered()));
+    menu.addAction("Отказ от места", this, SLOT(on_actionDenie_triggered()));
+
+    menu.exec(_queue[ui->tabWidget->currentIndex()].curWid->viewport()->mapToGlobal(pos));
+}
+
+void MainWindow::on_tableWidget_customContextMenuRequested(const QPoint &pos)
+{
+    QMenu menu("contextMenu", this);
+
+    menu.addAction("Удалить по номеру", this, SLOT(on_actionDelete_by_id_triggered()));
+    menu.addAction("Добавить пользователя", this, SLOT(on_actionAdd_User_triggered()));
+    menu.addAction("Извлечь по виду деятельности", this, SLOT(on_read_triggered()));
+    menu.addAction("Отказ от места", this, SLOT(on_actionDenie_triggered()));
+
+    menu.exec(_queue[ui->tabWidget->currentIndex()].curWid->viewport()->mapToGlobal(pos));
 }
