@@ -851,6 +851,10 @@ void MainWindow::on_tabWidget_tabCloseRequested(int index){
         }
         ui->tabWidget->removeTab(index);
         _queue.erase(_queue.begin() + index);
+        if(!_queue[ui->tabWidget->currentIndex()].curFile->fileName.isEmpty())
+        MainWindow::setWindowTitle(_queue[ui->tabWidget->currentIndex()].curFile->fileName);
+        else
+            MainWindow::setWindowTitle("New file");
     }
     else{
 
