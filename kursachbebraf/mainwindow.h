@@ -46,6 +46,10 @@ private slots:
 
     void on_tabWidget_tabCloseRequested(int index);
 
+    void on_connectQueue_triggered();
+
+    void on_read_triggered();
+
 private:
     Ui::MainWindow *ui;
     StartScreen* startScreen;

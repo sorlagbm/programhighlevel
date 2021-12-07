@@ -9,7 +9,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>832</width>
+    <width>987</width>
     <height>562</height>
    </rect>
   </property>
@@ -25,7 +25,7 @@
      <rect>
       <x>40</x>
       <y>10</y>
-      <width>751</width>
+      <width>891</width>
       <height>451</height>
      </rect>
     </property>
@@ -47,7 +47,7 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>751</width>
+        <width>891</width>
         <height>421</height>
        </rect>
       </property>
@@ -69,7 +69,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>832</width>
+     <width>987</width>
      <height>26</height>
     </rect>
    </property>
@@ -96,10 +96,12 @@
    </attribute>
    <addaction name="actionNew_file"/>
    <addaction name="actionDelete_by_id"/>
+   <addaction name="read"/>
    <addaction name="actionAdd_User"/>
    <addaction name="actionDenie"/>
    <addaction name="separator"/>
    <addaction name="actionaddtab"/>
+   <addaction name="connectQueue"/>
   </widget>
   <action name="actionDelete_by_id">
    <property name="text">
@@ -139,6 +141,16 @@
   <action name="actionaddtab">
    <property name="text">
     <string>Добавить вкладку</string>
+   </property>
+  </action>
+  <action name="connectQueue">
+   <property name="text">
+    <string>Соединить очереди</string>
+   </property>
+  </action>
+  <action name="read">
+   <property name="text">
+    <string>Извлечь по виду деятельности</string>
    </property>
   </action>
  </widget>

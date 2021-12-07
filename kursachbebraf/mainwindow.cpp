@@ -4,7 +4,7 @@
 #include "dialog.h"
 #include "saveornot.h"
 
-const unsigned short q_cols = 1;
+const unsigned short q_cols = 2;
 
 unsigned short q_rows = 0;
 
@@ -41,7 +41,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
             unsigned short len;
             _queue[ui->tabWidget->currentIndex()].curFile->file->read(reinterpret_cast<char*>(&len), sizeof(len));
             q_rows = len;
-            _queue[ui->tabWidget->currentIndex()].curWid->setColumnCount(1);
+            _queue[ui->tabWidget->currentIndex()].curWid->setColumnCount(q_cols);
             _queue[ui->tabWidget->currentIndex()].curWid->setRowCount(q_rows);
             _queue[ui->tabWidget->currentIndex()]._resize(q_rows);
 
@@ -57,6 +57,13 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
                 qDebug() << QString::fromStdString(g);
                 _queue[ui->tabWidget->currentIndex()].get_name(i) = QString::fromStdString(g);
 
+                _queue[ui->tabWidget->currentIndex()].curFile->file->read(reinterpret_cast<char*>(&_BUF_SZ), sizeof(_BUF_SZ));
+                _BUF = new char[_BUF_SZ];
+                _queue[ui->tabWidget->currentIndex()].curFile->file->read(_BUF, _BUF_SZ);
+                g = _BUF;
+                qDebug() << QString::fromStdString(g);
+                _queue[ui->tabWidget->currentIndex()].get_work(i) = QString::fromStdString(g);
+
                 delete[] _BUF;
 
             }
@@ -66,6 +73,10 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
                 QTableWidgetItem *name = new QTableWidgetItem;
                 name->setText(_queue[ui->tabWidget->currentIndex()].get_name(i));
                 _queue[ui->tabWidget->currentIndex()].curWid->setItem(i, 0, name);
+
+                QTableWidgetItem *work = new QTableWidgetItem;
+                work->setText(_queue[ui->tabWidget->currentIndex()].get_work(i));
+                _queue[ui->tabWidget->currentIndex()].curWid->setItem(i, 1, work);
 
             }
 
@@ -103,7 +114,6 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
 
         infoFile->read(reinterpret_cast<char*>(&tabCount), sizeof(tabCount));
         infoFile->read(reinterpret_cast<char*>(&curTab), sizeof(curTab));
-        qDebug() << tabCount << " " << curTab;
         _queue.resize(tabCount);
 
         size_t _BUF_SZ;
@@ -111,7 +121,6 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
         char* _BUF = new char[_BUF_SZ];
         infoFile->read(_BUF, _BUF_SZ);
         string g = _BUF;
-        qDebug() << QString::fromStdString(g);
 
         _queue[0] = Queue(0, new Queue::FileWork(new QFile(QString::fromStdString(g)), QString::fromStdString(g)), ui->tableWidget, 0);
 
@@ -120,7 +129,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
         _queue[0].curFile->file->read(reinterpret_cast<char*>(&len), sizeof(len));
         q_rows = len;
         _queue[0].curWid->setRowCount(q_rows);
-        _queue[0].curWid->setColumnCount(1);
+        _queue[0].curWid->setColumnCount(q_cols);
         _queue[0]._resize(q_rows);
         for(int i = 0; i < q_rows; i++){
 
@@ -134,15 +143,28 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
             qDebug() << QString::fromStdString(a);
             _queue[0].get_name(i) = QString::fromStdString(a);
 
+            _queue[0].curFile->file->read(reinterpret_cast<char*>(&_BUF_SZ), sizeof(_BUF_SZ));
+            _BUF = new char[_BUF_SZ];
+            _queue[0].curFile->file->read(_BUF, _BUF_SZ);
+            g = _BUF;
+            qDebug() << QString::fromStdString(g);
+            _queue[0].get_work(i) = QString::fromStdString(g);
+
             delete[] _BUF;
 
         }
 
         for(int i = 0; i < q_rows; i++){
 
+
             QTableWidgetItem *name = new QTableWidgetItem;
             name->setText(_queue[0].get_name(i));
             _queue[0].curWid->setItem(i, 0, name);
+
+            QTableWidgetItem *work = new QTableWidgetItem;
+            work->setText(_queue[0].get_work(i));
+            _queue[0].curWid->setItem(i, 1, work);
+
 
         }
 
@@ -157,7 +179,6 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
             char* _BUF = new char[_BUF_SZ];
             infoFile->read(_BUF, _BUF_SZ);
             string g = _BUF;
-            qDebug() << QString::fromStdString(g);
 
             _queue[index] = Queue(0, new Queue::FileWork(new QFile(QString::fromStdString(g)), QString::fromStdString(g)), new QTableWidget(0, 1), 0);
 
@@ -166,7 +187,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
             _queue[index].curFile->file->read(reinterpret_cast<char*>(&len), sizeof(len));
             q_rows = len;
             _queue[index].curWid->setRowCount(q_rows);
-            _queue[index].curWid->setColumnCount(1);
+            _queue[index].curWid->setColumnCount(q_cols);
             _queue[index]._resize(q_rows);
             for(int i = 0; i < q_rows; i++){
 
@@ -180,6 +201,13 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
                 qDebug() << QString::fromStdString(a);
                 _queue[index].get_name(i) = QString::fromStdString(a);
 
+                _queue[index].curFile->file->read(reinterpret_cast<char*>(&_BUF_SZ), sizeof(_BUF_SZ));
+                _BUF = new char[_BUF_SZ];
+                _queue[index].curFile->file->read(_BUF, _BUF_SZ);
+                g = _BUF;
+                qDebug() << QString::fromStdString(g);
+                _queue[index].get_work(i) = QString::fromStdString(g);
+
                 delete[] _BUF;
 
             }
@@ -189,6 +217,10 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
                 QTableWidgetItem *name = new QTableWidgetItem;
                 name->setText(_queue[index].get_name(i));
                 _queue[index].curWid->setItem(i, 0, name);
+
+                QTableWidgetItem *work = new QTableWidgetItem;
+                work->setText(_queue[index].get_work(i));
+                _queue[index].curWid->setItem(i, 1, work);
 
             }
 
@@ -221,6 +253,10 @@ void MainWindow::on_actionDelete_by_id_triggered(){
         }
         else n = text.toUInt() - 1;
 
+        if(n >= _queue[ui->tabWidget->currentIndex()].get_size()) {QMessageBox::information(this, "Выход за пределы!", "Выход за пределы!");
+             _queue[ui->tabWidget->currentIndex()].curFile->isChanged = false;
+            return;}
+
         _queue[ui->tabWidget->currentIndex()].curWid->clear();
 
         _queue[ui->tabWidget->currentIndex()]._erase(n);
@@ -235,6 +271,10 @@ void MainWindow::on_actionDelete_by_id_triggered(){
             name->setText(_queue[ui->tabWidget->currentIndex()].get_name(i));
             _queue[ui->tabWidget->currentIndex()].curWid->setItem(i, 0, name);
 
+            QTableWidgetItem *work = new QTableWidgetItem;
+            work->setText(_queue[ui->tabWidget->currentIndex()].get_work(i));
+            _queue[ui->tabWidget->currentIndex()].curWid->setItem(i, 1, work);
+
         }
         _queue[ui->tabWidget->currentIndex()].curFile->isChanged = true;
 }
@@ -248,6 +288,10 @@ void MainWindow::on_actionAdd_User_triggered(){
                             tr("Name:"), QLineEdit::Normal,
                             "", &ok);
 
+    QString Work = QInputDialog::getText(this, tr("Добавить работу"),
+                                         tr("Вид деятельности:"), QLineEdit::Normal,
+                                         "", &ok);
+
     for(int i = 0; i < q_rows; i++){
 
         if (text == _queue[ui->tabWidget->currentIndex()].get_name(i)){
@@ -256,6 +300,7 @@ void MainWindow::on_actionAdd_User_triggered(){
             if (choise->exec() == QDialog::Rejected){
                 return;
             }
+            break;
 
         }
 
@@ -263,7 +308,7 @@ void MainWindow::on_actionAdd_User_triggered(){
 
     if(!text.isEmpty()){
 
-        _queue[ui->tabWidget->currentIndex()].push(text);
+        _queue[ui->tabWidget->currentIndex()].push(text, Work);
 
         q_rows++;
 
@@ -273,6 +318,11 @@ void MainWindow::on_actionAdd_User_triggered(){
         name->setText(_queue[ui->tabWidget->currentIndex()].get_name(_queue[ui->tabWidget->currentIndex()].get_size() - 1));
         _queue[ui->tabWidget->currentIndex()].curWid->setItem(q_rows - 1, 0, name);
 
+        QTableWidgetItem *work = new QTableWidgetItem;
+        work->setText(_queue[ui->tabWidget->currentIndex()].get_work(_queue[ui->tabWidget->currentIndex()].get_size() - 1));
+        _queue[ui->tabWidget->currentIndex()].curWid->setItem(q_rows - 1, 1, work);
+
+
     }
     _queue[ui->tabWidget->currentIndex()].curFile->isChanged = true;
 
@@ -281,6 +331,26 @@ void MainWindow::on_actionAdd_User_triggered(){
 MainWindow::~MainWindow(){
 
     tabCount = ui->tabWidget->count();
+
+    for(size_t index = 0; index < ui->tabWidget->count(); ++index){
+
+        if(!_queue[index].curFile->isChanged && _queue[index].curFile->file == nullptr){
+
+            tabCount -= 1;
+
+        }
+
+    }
+
+    if(tabCount == 0) {
+        delete ui;
+
+        infoFile->open(QIODevice::WriteOnly | QIODevice::Truncate);
+        infoFile->close();
+        return;
+
+    }
+
     curTab = ui->tabWidget->currentIndex();
 
     infoFile->open(QIODevice::WriteOnly | QIODevice::Truncate);
@@ -301,6 +371,7 @@ MainWindow::~MainWindow(){
                     for(int i = 0; i < q_rows; i++){
 
                         _queue[index].get_name(i) = _queue[index].curWid->item(i, 0)->text();
+                        _queue[index].get_work(i) = _queue[index].curWid->item(i, 1)->text();
 
                     }
 
@@ -314,9 +385,12 @@ MainWindow::~MainWindow(){
                         _queue[index].curFile->file->write(reinterpret_cast<char*>(&_BUF), sizeof(_BUF));
                         _queue[index].curFile->file->write(_queue[index].get_name(i).toStdString().c_str(), _BUF);
 
+                        _BUF =_queue[ui->tabWidget->currentIndex()].get_work(i).size() + 1;
+                        _queue[ui->tabWidget->currentIndex()].curFile->file->write(reinterpret_cast<char*>(&_BUF), sizeof(_BUF));
+                        _queue[ui->tabWidget->currentIndex()].curFile->file->write(_queue[ui->tabWidget->currentIndex()].get_work(i).toStdString().c_str(), _BUF);
+
                     }
                     _queue[index].curFile->file->close();
-                    qDebug() << _queue[index].curFile->fileName;
                     size_t _BUF = _queue[index].curFile->fileName.size() + 1;
                     infoFile->write(reinterpret_cast<char*>(&_BUF), sizeof(_BUF));
                     infoFile->write(_queue[index].curFile->fileName.toStdString().c_str(), _BUF);
@@ -332,6 +406,7 @@ MainWindow::~MainWindow(){
                     for(int i = 0; i < q_rows; i++){
 
                         _queue[index].get_name(i) = _queue[index].curWid->item(i, 0)->text();
+                        _queue[index].get_work(i) = _queue[index].curWid->item(i, 1)->text();
 
                     }
 
@@ -345,9 +420,12 @@ MainWindow::~MainWindow(){
                         _queue[index].curFile->file->write(reinterpret_cast<char*>(&_BUF), sizeof(_BUF));
                         _queue[index].curFile->file->write(_queue[index].get_name(i).toStdString().c_str(), _BUF);
 
+                        _BUF =_queue[ui->tabWidget->currentIndex()].get_work(i).size() + 1;
+                        _queue[ui->tabWidget->currentIndex()].curFile->file->write(reinterpret_cast<char*>(&_BUF), sizeof(_BUF));
+                        _queue[ui->tabWidget->currentIndex()].curFile->file->write(_queue[ui->tabWidget->currentIndex()].get_work(i).toStdString().c_str(), _BUF);
+
                     }
                     _queue[index].curFile->file->close();
-                    qDebug() << _queue[index].curFile->fileName;
                     size_t _BUF = _queue[index].curFile->fileName.size() + 1;
                     infoFile->write(reinterpret_cast<char*>(&_BUF), sizeof(_BUF));
                     infoFile->write(_queue[index].curFile->fileName.toStdString().c_str(), _BUF);
@@ -362,9 +440,14 @@ MainWindow::~MainWindow(){
             }
         }
         else{
-            size_t _BUF = _queue[index].curFile->fileName.size() + 1;
-            infoFile->write(reinterpret_cast<char*>(&_BUF), sizeof(_BUF));
-            infoFile->write(_queue[index].curFile->fileName.toStdString().c_str(), _BUF);
+
+            if(_queue[index].curFile->file != nullptr){
+
+                size_t _BUF = _queue[index].curFile->fileName.size() + 1;
+                infoFile->write(reinterpret_cast<char*>(&_BUF), sizeof(_BUF));
+                infoFile->write(_queue[index].curFile->fileName.toStdString().c_str(), _BUF);
+
+            }
         }
 
     }
@@ -388,9 +471,11 @@ void MainWindow::on_actionDenie_triggered(){
     if(text.isEmpty()) n = 0;
     else n = text.toUInt() - 1;
 
-   _queue[ui->tabWidget->currentIndex()].get_denials(n)++;
+    if(n >= _queue[ui->tabWidget->currentIndex()].get_size()) {QMessageBox::information(this, "Выход за пределы!", "Выход за пределы!");
+         _queue[ui->tabWidget->currentIndex()].curFile->isChanged = false;
+        return;}
 
-    qDebug() << n << " " << _queue[ui->tabWidget->currentIndex()].get_denials(n) << "\n";
+   _queue[ui->tabWidget->currentIndex()].get_denials(n)++;
 
     if (_queue[ui->tabWidget->currentIndex()].get_denials(n) != 3){
 
@@ -406,6 +491,11 @@ void MainWindow::on_actionDenie_triggered(){
             QTableWidgetItem *name = new QTableWidgetItem;
             name->setText(_queue[ui->tabWidget->currentIndex()].get_name(i));
             _queue[ui->tabWidget->currentIndex()].curWid->setItem(i, 0, name);
+
+
+            QTableWidgetItem *work = new QTableWidgetItem;
+            work->setText(_queue[ui->tabWidget->currentIndex()].get_work(i));
+            _queue[ui->tabWidget->currentIndex()].curWid->setItem(i, 1, work);
 
         }
         _queue[ui->tabWidget->currentIndex()].curFile->isChanged = true;
@@ -426,6 +516,11 @@ void MainWindow::on_actionDenie_triggered(){
             name->setText(_queue[ui->tabWidget->currentIndex()].get_name(i));
             _queue[ui->tabWidget->currentIndex()].curWid->setItem(i, 0, name);
 
+
+            QTableWidgetItem *work = new QTableWidgetItem;
+            work->setText(_queue[ui->tabWidget->currentIndex()].get_work(i));
+            _queue[ui->tabWidget->currentIndex()].curWid->setItem(i, 1, work);
+
         }
         _queue[ui->tabWidget->currentIndex()].curFile->isChanged = true;
 
@@ -445,6 +540,7 @@ void MainWindow::on_action_triggered(){
     for(int i = 0; i < q_rows; i++){
 
         _queue[ui->tabWidget->currentIndex()].get_name(i) = _queue[ui->tabWidget->currentIndex()].curWid->item(i, 0)->text();
+        _queue[ui->tabWidget->currentIndex()].get_work(i) = _queue[ui->tabWidget->currentIndex()].curWid->item(i, 1)->text();
 
     }
     _queue[ui->tabWidget->currentIndex()].curFile->file->write(reinterpret_cast<char*>(&q_rows), sizeof(q_rows));
@@ -457,10 +553,16 @@ void MainWindow::on_action_triggered(){
         _queue[ui->tabWidget->currentIndex()].curFile->file->write(reinterpret_cast<char*>(&_BUF), sizeof(_BUF));
         _queue[ui->tabWidget->currentIndex()].curFile->file->write(_queue[ui->tabWidget->currentIndex()].get_name(i).toStdString().c_str(), _BUF);
 
+        _BUF =_queue[ui->tabWidget->currentIndex()].get_work(i).size() + 1;
+        _queue[ui->tabWidget->currentIndex()].curFile->file->write(reinterpret_cast<char*>(&_BUF), sizeof(_BUF));
+        _queue[ui->tabWidget->currentIndex()].curFile->file->write(_queue[ui->tabWidget->currentIndex()].get_work(i).toStdString().c_str(), _BUF);
+
+
     }
 
     _queue[ui->tabWidget->currentIndex()].curFile->file->close();
     _queue[ui->tabWidget->currentIndex()].curFile->isChanged = false;
+    ui->tabWidget->setTabText(ui->tabWidget->count() - 1, _queue[ui->tabWidget->currentIndex()].curFile->fileName);
 
 }
 
@@ -479,6 +581,8 @@ void MainWindow::on_action_2_triggered(){
         for(int i = 0; i < q_rows; i++){
 
             _queue[ui->tabWidget->currentIndex()].get_name(i) = _queue[ui->tabWidget->currentIndex()].curWid->item(i, 0)->text();
+            _queue[ui->tabWidget->currentIndex()].get_work(i) = _queue[ui->tabWidget->currentIndex()].curWid->item(i, 1)->text();
+
 
         }
 
@@ -491,6 +595,10 @@ void MainWindow::on_action_2_triggered(){
             size_t _BUF = _queue[ui->tabWidget->currentIndex()].get_name(i).size() + 1;
             _queue[ui->tabWidget->currentIndex()].curFile->file->write(reinterpret_cast<char*>(&_BUF), sizeof(_BUF));
             _queue[ui->tabWidget->currentIndex()].curFile->file->write(_queue[ui->tabWidget->currentIndex()].get_name(i).toStdString().c_str(), _BUF);
+
+            _BUF =_queue[ui->tabWidget->currentIndex()].get_work(i).size() + 1;
+            _queue[ui->tabWidget->currentIndex()].curFile->file->write(reinterpret_cast<char*>(&_BUF), sizeof(_BUF));
+            _queue[ui->tabWidget->currentIndex()].curFile->file->write(_queue[ui->tabWidget->currentIndex()].get_work(i).toStdString().c_str(), _BUF);
 
         }
 
@@ -508,6 +616,7 @@ void MainWindow::on_action_2_triggered(){
         for(int i = 0; i < q_rows; i++){
 
             _queue[ui->tabWidget->currentIndex()].get_name(i) = _queue[ui->tabWidget->currentIndex()].curWid->item(i, 0)->text();
+           _queue[ui->tabWidget->currentIndex()].get_work(i) = _queue[ui->tabWidget->currentIndex()].curWid->item(i, 1)->text();
 
         }
 
@@ -520,6 +629,10 @@ void MainWindow::on_action_2_triggered(){
             size_t _BUF = _queue[ui->tabWidget->currentIndex()].get_name(i).size() + 1;
             _queue[ui->tabWidget->currentIndex()].curFile->file->write(reinterpret_cast<char*>(&_BUF), sizeof(_BUF));
             _queue[ui->tabWidget->currentIndex()].curFile->file->write(_queue[ui->tabWidget->currentIndex()].get_name(i).toStdString().c_str(), _BUF);
+
+            _BUF =_queue[ui->tabWidget->currentIndex()].get_work(i).size() + 1;
+            _queue[ui->tabWidget->currentIndex()].curFile->file->write(reinterpret_cast<char*>(&_BUF), sizeof(_BUF));
+            _queue[ui->tabWidget->currentIndex()].curFile->file->write(_queue[ui->tabWidget->currentIndex()].get_work(i).toStdString().c_str(), _BUF);
 
         }
 
@@ -557,8 +670,16 @@ void MainWindow::on_action_3_triggered(){
         char* _BUF = new char[_BUF_SZ];
         _queue[ui->tabWidget->currentIndex()].curFile->file->read(_BUF, _BUF_SZ);
         string g = _BUF;
-        qDebug() << QString::fromStdString(g);
         _queue[ui->tabWidget->currentIndex()].get_name(i) = QString::fromStdString(g);
+
+
+        _queue[ui->tabWidget->currentIndex()].curFile->file->read(reinterpret_cast<char*>(&_BUF_SZ), sizeof(_BUF_SZ));
+        _BUF = new char[_BUF_SZ];
+        _queue[ui->tabWidget->currentIndex()].curFile->file->read(_BUF, _BUF_SZ);
+        g = _BUF;
+        qDebug() << QString::fromStdString(g);
+        _queue[ui->tabWidget->currentIndex()].get_work(i) = QString::fromStdString(g);
+
 
         delete[] _BUF;
 
@@ -569,6 +690,10 @@ void MainWindow::on_action_3_triggered(){
         QTableWidgetItem *name = new QTableWidgetItem;
         name->setText(_queue[ui->tabWidget->currentIndex()].get_name(i));
         _queue[ui->tabWidget->currentIndex()].curWid->setItem(i, 0, name);
+
+        QTableWidgetItem *work = new QTableWidgetItem;
+        work->setText(_queue[ui->tabWidget->currentIndex()].get_work(i));
+        _queue[ui->tabWidget->currentIndex()].curWid->setItem(i, 1, work);
 
     }
 
@@ -591,6 +716,7 @@ void MainWindow::on_actionNew_file_triggered(){
     _queue[ui->tabWidget->currentIndex()].curFile->file->close();
 
     _queue[ui->tabWidget->currentIndex()].curFile->file = nullptr;
+    _queue[ui->tabWidget->currentIndex()].curFile->fileName = "";
 
     _queue[ui->tabWidget->currentIndex()]._clear();
 
@@ -603,6 +729,7 @@ void MainWindow::on_actionNew_file_triggered(){
     _queue[ui->tabWidget->currentIndex()].curWid->setRowCount(0);
 
     q_rows = 0;
+    _queue[ui->tabWidget->currentIndex()].curFile->isChanged = false;
     }
     else{
         _queue[ui->tabWidget->currentIndex()]._clear();
@@ -624,13 +751,14 @@ void MainWindow::on_actionNew_file_triggered(){
 
 void MainWindow::on_actionaddtab_triggered(){
 
-    QTableWidget* newT = new QTableWidget(0, 1);
+    QTableWidget* newT = new QTableWidget(0, 2);
     //q_rows = _queue[ui->tabWidget->currentIndex()].get_size();
     ui->tabWidget->addTab(newT, "fdsaf");
     Queue temp = Queue(0, new Queue::FileWork(), newT, 0);
     _queue.push_back(temp);
     tabCount += 1;
-    ui->tabWidget->setTabText(ui->tabWidget->count() - 1, _queue[ui->tabWidget->count() - 1].curFile->fileName);
+    ui->tabWidget->setTabText(ui->tabWidget->count() - 1, "New file");
+    _queue[ui->tabWidget->count() - 1].curFile->isChanged = false;
 
 }
 
@@ -666,6 +794,7 @@ void MainWindow::on_tabWidget_tabCloseRequested(int index){
                     for(int i = 0; i < q_rows; i++){
 
                         _queue[index].get_name(i) = _queue[index].curWid->item(i, 0)->text();
+                        _queue[index].get_work(i) = _queue[index].curWid->item(i, 1)->text();
 
                     }
 
@@ -678,6 +807,10 @@ void MainWindow::on_tabWidget_tabCloseRequested(int index){
                         size_t _BUF = _queue[index].get_name(i).size() + 1;
                         _queue[index].curFile->file->write(reinterpret_cast<char*>(&_BUF), sizeof(_BUF));
                         _queue[index].curFile->file->write(_queue[index].get_name(i).toStdString().c_str(), _BUF);
+
+                        _BUF =_queue[ui->tabWidget->currentIndex()].get_work(i).size() + 1;
+                        _queue[ui->tabWidget->currentIndex()].curFile->file->write(reinterpret_cast<char*>(&_BUF), sizeof(_BUF));
+                        _queue[ui->tabWidget->currentIndex()].curFile->file->write(_queue[ui->tabWidget->currentIndex()].get_work(i).toStdString().c_str(), _BUF);
 
                     }
                     _queue[index].curFile->file->close();
@@ -693,6 +826,7 @@ void MainWindow::on_tabWidget_tabCloseRequested(int index){
                     for(int i = 0; i < q_rows; i++){
 
                         _queue[index].get_name(i) = _queue[index].curWid->item(i, 0)->text();
+                        _queue[index].get_work(i) = _queue[index].curWid->item(i, 1)->text();
 
                     }
 
@@ -705,6 +839,10 @@ void MainWindow::on_tabWidget_tabCloseRequested(int index){
                         size_t _BUF = _queue[index].get_name(i).size() + 1;
                         _queue[index].curFile->file->write(reinterpret_cast<char*>(&_BUF), sizeof(_BUF));
                         _queue[index].curFile->file->write(_queue[index].get_name(i).toStdString().c_str(), _BUF);
+
+                        _BUF =_queue[ui->tabWidget->currentIndex()].get_work(i).size() + 1;
+                        _queue[ui->tabWidget->currentIndex()].curFile->file->write(reinterpret_cast<char*>(&_BUF), sizeof(_BUF));
+                        _queue[ui->tabWidget->currentIndex()].curFile->file->write(_queue[ui->tabWidget->currentIndex()].get_work(i).toStdString().c_str(), _BUF);
 
                     }
                     _queue[index].curFile->file->close();
@@ -729,6 +867,7 @@ void MainWindow::on_tabWidget_tabCloseRequested(int index){
                     for(int i = 0; i < q_rows; i++){
 
                         _queue[index].get_name(i) = _queue[index].curWid->item(i, 0)->text();
+                        _queue[index].get_work(i) = _queue[index].curWid->item(i, 1)->text();
 
                     }
 
@@ -741,6 +880,10 @@ void MainWindow::on_tabWidget_tabCloseRequested(int index){
                         size_t _BUF = _queue[index].get_name(i).size() + 1;
                         _queue[index].curFile->file->write(reinterpret_cast<char*>(&_BUF), sizeof(_BUF));
                         _queue[index].curFile->file->write(_queue[index].get_name(i).toStdString().c_str(), _BUF);
+
+                        _BUF =_queue[ui->tabWidget->currentIndex()].get_work(i).size() + 1;
+                        _queue[ui->tabWidget->currentIndex()].curFile->file->write(reinterpret_cast<char*>(&_BUF), sizeof(_BUF));
+                        _queue[ui->tabWidget->currentIndex()].curFile->file->write(_queue[ui->tabWidget->currentIndex()].get_work(i).toStdString().c_str(), _BUF);
 
                     }
                     _queue[index].curFile->file->close();
@@ -756,6 +899,7 @@ void MainWindow::on_tabWidget_tabCloseRequested(int index){
                     for(int i = 0; i < q_rows; i++){
 
                         _queue[index].get_name(i) = _queue[index].curWid->item(i, 0)->text();
+                        _queue[index].get_work(i) = _queue[index].curWid->item(i, 1)->text();
 
                     }
 
@@ -769,6 +913,11 @@ void MainWindow::on_tabWidget_tabCloseRequested(int index){
                         _queue[index].curFile->file->write(reinterpret_cast<char*>(&_BUF), sizeof(_BUF));
                         _queue[index].curFile->file->write(_queue[index].get_name(i).toStdString().c_str(), _BUF);
 
+
+                        _BUF =_queue[ui->tabWidget->currentIndex()].get_work(i).size() + 1;
+                        _queue[ui->tabWidget->currentIndex()].curFile->file->write(reinterpret_cast<char*>(&_BUF), sizeof(_BUF));
+                        _queue[ui->tabWidget->currentIndex()].curFile->file->write(_queue[ui->tabWidget->currentIndex()].get_work(i).toStdString().c_str(), _BUF);
+
                     }
                     _queue[index].curFile->file->close();
                 }
@@ -781,7 +930,7 @@ void MainWindow::on_tabWidget_tabCloseRequested(int index){
 
             ui->tableWidget->clear();
             ui->tableWidget->setRowCount(0);
-            ui->tableWidget->setColumnCount(1);
+            ui->tableWidget->setColumnCount(q_cols);
             fileName = QFileDialog::getOpenFileName(this, "*.bin");
             if (fileName.isEmpty()) return;
             MainWindow::setWindowTitle(fileName);
@@ -795,7 +944,7 @@ void MainWindow::on_tabWidget_tabCloseRequested(int index){
             unsigned short len;
             _queue[0].curFile->file->read(reinterpret_cast<char*>(&len), sizeof(len));
             q_rows = len;
-            _queue[0].curWid->setColumnCount(1);
+            _queue[0].curWid->setColumnCount(q_cols);
             _queue[0].curWid->setRowCount(q_rows);
             _queue[0]._resize(q_rows);
 
@@ -808,8 +957,16 @@ void MainWindow::on_tabWidget_tabCloseRequested(int index){
                 char* _BUF = new char[_BUF_SZ];
                 _queue[0].curFile->file->read(_BUF, _BUF_SZ);
                 string g = _BUF;
-                qDebug() << QString::fromStdString(g);
                 _queue[0].get_name(i) = QString::fromStdString(g);
+
+
+                _queue[ui->tabWidget->currentIndex()].curFile->file->read(reinterpret_cast<char*>(&_BUF_SZ), sizeof(_BUF_SZ));
+                _BUF = new char[_BUF_SZ];
+                _queue[ui->tabWidget->currentIndex()].curFile->file->read(_BUF, _BUF_SZ);
+                g = _BUF;
+                qDebug() << QString::fromStdString(g);
+                _queue[ui->tabWidget->currentIndex()].get_work(i) = QString::fromStdString(g);
+
 
                 delete[] _BUF;
 
@@ -821,6 +978,10 @@ void MainWindow::on_tabWidget_tabCloseRequested(int index){
                 name->setText(_queue[0].get_name(i));
                 _queue[0].curWid->setItem(i, 0, name);
 
+                QTableWidgetItem *work = new QTableWidgetItem;
+                work->setText(_queue[0].get_work(i));
+                _queue[0].curWid->setItem(i, 1, work);
+
             }
 
             _queue[0].curFile->file->close();
@@ -829,7 +990,7 @@ void MainWindow::on_tabWidget_tabCloseRequested(int index){
         else{
             ui->tableWidget->clear();
             ui->tableWidget->setRowCount(0);
-            ui->tableWidget->setColumnCount(1);
+            ui->tableWidget->setColumnCount(q_cols);
 
             MainWindow::setWindowTitle("New file");
             _queue[0] = Queue(0, new Queue::FileWork(nullptr), ui->tableWidget, 0);
@@ -840,8 +1001,142 @@ void MainWindow::on_tabWidget_tabCloseRequested(int index){
             _queue[0].curFile->file = new QFile(fileName);
             _queue[0].curFile->fileName = fileName;
             _queue[0].curWid = ui->tableWidget;
+            _queue[0].curFile->isChanged = false;
 
         }
 
     }
+}
+
+void merge(vector<Queue>& c, vector<Queue> a, vector<Queue> b, int id){
+
+
+    static const std::size_t STEP(1);
+    vector<Queue::User>::const_iterator bIt = b[0]._queue.begin();
+    for(vector<Queue::User>::const_iterator aIt = a[id]._queue.begin();
+        aIt != a[id]._queue.end(); ++aIt)
+    {
+        c[0].push(aIt->name, aIt->work);
+    }
+    for(vector<Queue::User>::const_iterator bIt = b[0]._queue.begin();
+        bIt != b[0]._queue.end(); ++bIt)
+    {
+        c[0].push(bIt->name, bIt->work);
+    }
+
+}
+
+void MainWindow::on_connectQueue_triggered(){
+
+    //_queue[ui->tabWidget->currentIndex()].curWid->clear();
+    //_queue[ui->tabWidget->currentIndex()].curWid->setRowCount(0);
+
+    fileName = QFileDialog::getOpenFileName(this, "*.bin");
+    if (fileName.isEmpty()) return;
+
+    vector<Queue> temp(1);
+    temp[0] = Queue(0, new Queue::FileWork(new QFile(fileName), fileName), _queue[ui->tabWidget->currentIndex()].curWid, 0);
+    temp[0].curFile->file->open(QIODevice::ReadOnly);
+    unsigned short len;
+    temp[0].curFile->file->read(reinterpret_cast<char*>(&len), sizeof(len));
+    q_rows = len;
+    //temp[0].curWid->setRowCount(q_rows);
+    temp[0]._resize(q_rows);
+
+    for(int i = 0; i < q_rows; i++){
+
+        temp[0].curFile->file->read(reinterpret_cast<char*>(&temp[0].get_denials(i)),
+                sizeof(temp[0].get_denials(i)));
+        size_t _BUF_SZ;
+        temp[0].curFile->file->read(reinterpret_cast<char*>(&_BUF_SZ), sizeof(_BUF_SZ));
+        char* _BUF = new char[_BUF_SZ];
+        temp[0].curFile->file->read(_BUF, _BUF_SZ);
+        string g = _BUF;
+        temp[0].get_name(i) = QString::fromStdString(g);
+
+
+        temp[0].curFile->file->read(reinterpret_cast<char*>(&_BUF_SZ), sizeof(_BUF_SZ));
+        _BUF = new char[_BUF_SZ];
+        temp[0].curFile->file->read(_BUF, _BUF_SZ);
+        g = _BUF;
+        qDebug() << QString::fromStdString(g);
+        temp[0].get_work(i) = QString::fromStdString(g);
+
+        delete[] _BUF;
+
+    }
+    qDebug() << _queue[ui->tabWidget->currentIndex()].get_size();
+    temp[0].curFile->file->close();
+
+
+    //_queue[ui->tabWidget->currentIndex()]._resize(temp.size() + _queue[ui->tabWidget->currentIndex()].get_size());
+    vector<Queue> c(1);
+    c[0] = Queue(0,
+            nullptr, _queue[ui->tabWidget->currentIndex()].curWid, 0);
+    //c[0]._resize(temp[0].get_size() +_queue[ui->tabWidget->currentIndex()].get_size());
+    merge(c, _queue, temp, ui->tabWidget->currentIndex());
+
+    _queue[ui->tabWidget->currentIndex()]._resize(c[0].get_size());
+    _queue[ui->tabWidget->currentIndex()].curWid->setRowCount(c[0].get_size());
+    for(int i = 0; i < c[0].get_size(); i++){
+
+        _queue[ui->tabWidget->currentIndex()].get_name(i) = c[0].get_name(i);
+        _queue[ui->tabWidget->currentIndex()].get_work(i) = c[0].get_work(i);
+
+    }
+
+    for(int i = 0; i < c[0].get_size(); i++){
+
+        QTableWidgetItem *name = new QTableWidgetItem;
+        name->setText(_queue[ui->tabWidget->currentIndex()].get_name(i));
+        _queue[ui->tabWidget->currentIndex()].curWid->setItem(i, 0, name);
+
+        QTableWidgetItem *work = new QTableWidgetItem;
+        work->setText(_queue[ui->tabWidget->currentIndex()].get_name(i));
+        _queue[ui->tabWidget->currentIndex()].curWid->setItem(i, 1, work);
+
+    }
+
+
+
+    //_queue[ui->tabWidget->currentIndex()].curFile->file->close();
+    _queue[ui->tabWidget->currentIndex()].curFile->isChanged = true;
+
+}
+
+void MainWindow::on_read_triggered(){
+
+    QString text = QInputDialog::getText(this, tr("Извлечь во роду деятельности"),
+                            tr("Работа:"), QLineEdit::Normal,
+                            "", new bool());
+
+    for(int i = 0; i < _queue[ui->tabWidget->currentIndex()].get_size(); i++){
+
+        if(text == _queue[ui->tabWidget->currentIndex()].get_work(i)){
+
+            _queue[ui->tabWidget->currentIndex()]._erase(i);
+            i -= 1;
+            qDebug() << i;
+
+        }
+
+    }
+
+    _queue[ui->tabWidget->currentIndex()].curWid->clear();
+
+    _queue[ui->tabWidget->currentIndex()].curWid->setRowCount(_queue[ui->tabWidget->currentIndex()].get_size());
+
+    for(auto i = 0; i < _queue[ui->tabWidget->currentIndex()].get_size(); i++){
+
+        QTableWidgetItem *name = new QTableWidgetItem;
+        name->setText(_queue[ui->tabWidget->currentIndex()].get_name(i));
+        _queue[ui->tabWidget->currentIndex()].curWid->setItem(i, 0, name);
+
+        QTableWidgetItem *work = new QTableWidgetItem;
+        work->setText(_queue[ui->tabWidget->currentIndex()].get_work(i));
+        _queue[ui->tabWidget->currentIndex()].curWid->setItem(i, 1, work);
+
+    }
+    _queue[ui->tabWidget->currentIndex()].curFile->isChanged = true;
+
 }

@@ -10,6 +10,10 @@ using namespace std;
 class Queue{
 private:
 
+
+
+public:
+
     struct User{
 
         QString name;
@@ -25,8 +29,6 @@ private:
 
     };
     vector<User> _queue;
-
-public:
 
     struct FileWork{
 
@@ -59,8 +61,8 @@ public:
     void _resize(int i){
         _queue.resize(i);
     }
-    void push(QString name){
-        _queue.push_back(User(name));
+    void push(QString name, QString work){
+        _queue.push_back(User(name, 0, work));
     }
     void _clear(){
         this->_queue.clear();
@@ -68,6 +70,7 @@ public:
 
     User& operator[](int i){return this->_queue[i];}
     QString& get_name(int i) {return this->_queue[i].name;}
+    QString& get_work(int i) {return this->_queue[i].work;}
     unsigned get_size() const {return this->_queue.size(); }
     unsigned& get_denials(int i) {return this->_queue[i].denials; }
 
