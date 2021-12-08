@@ -27,8 +27,8 @@ int main(){
     for (int i = 0; i < a.size(); i++)
     {
         if(del_count(a[i]) >= k)
-        a.insert(a.begin() + i + 1, 0); // We insert at the next position
-        i++; // We make additional increment only if insertion took place
+        a.insert(a.begin() + i + 1, 0);
+        i++;
     }
 
     for (auto&& e : a) {
