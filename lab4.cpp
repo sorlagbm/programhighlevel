@@ -1,6 +1,7 @@
 #include <iostream>
 #include <bitset>
 #include <set>
+#include <fstream>
 using namespace std;
 
 template<size_t N>
@@ -8,7 +9,7 @@ class Bitset {
 
 private:
 
-	
+	size_t size;
 
 public:
 
@@ -28,6 +29,7 @@ public:
 	};
 
 	bool field[N];
+	size_t get_size() const { return this->size; }
 	Bitset(unsigned long long value) {
 
 		construct(value);
@@ -39,6 +41,7 @@ public:
 			*begin ^= *end ^= *begin ^= *end;
 			begin++; end--;
 		}
+		size = N;
 
 	}
 
@@ -53,6 +56,10 @@ public:
 
 		}
 
+	}
+
+	bool& operator[](int i) {
+		return field[size - 1 - i];
 	}
 
 	size_t number() {
@@ -118,16 +125,22 @@ public:
 
 	}
 
+	friend ostream& operator<<(ostream& exit, const Bitset<N>& obj) {
+
+		for (int i = 0; i < 32; i++) {
+			exit << obj.field[i];
+		}
+		return exit;
+
+	}
+
 };
 
 int main() {
 
 	Bitset<32> e(1435);
 	Bitset<32> a(1337);
-	for (int i = 0; i < 32; i++) {
-		cout << e.field[i];
-	}
-	cout << endl;
+	cout << e << endl;
 	bitset<32> yeye(1435);
 	bitset<32> eeee(1337);
 	cout << yeye << endl;
@@ -135,34 +148,25 @@ int main() {
 	yeye &= eeee;
 	cout << yeye << endl;
 	e &= a;
-	for (int i = 0; i < 32; i++) {
-		cout << e.field[i];
-	}
-	cout << endl;
+	cout << e << endl;
 
 	yeye |= eeee;
 	cout << yeye << endl;
 	e |= a;
-	for (int i = 0; i < 32; i++) {
-		cout << e.field[i];
-	}
-	cout << endl;
+	cout << e << endl;
 
 	yeye <<= 5;
 	cout << yeye << endl;
 	e <<= 5;
-	for (int i = 0; i < 32; i++) {
-		cout << e.field[i];
-	}
-	cout << endl;
+	cout << e << endl;
 
 	yeye >>= 5;
 	cout << yeye << endl;
 	e >>= 5;
-	for (int i = 0; i < 32; i++) {
-		cout << e.field[i];
-	}
-	cout << endl;
+	cout << e << endl;
+
+	cout << yeye[0] << endl;
+	cout << e[0] << endl;
 
 	return 0;
 }
