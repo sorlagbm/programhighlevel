@@ -26,6 +26,7 @@ public:
 
 
 	};
+
 	bool field[N];
 	Bitset(unsigned long long value) {
 
@@ -56,14 +57,52 @@ public:
 
 	}
 
+	size_t number() {
+
+		size_t byte = 0;
+		for (size_t index = 0; index < N; index++) {
+
+			byte = (byte << 1) | field[index];
+
+		}
+		return byte;
+	}
+
+	Bitset& operator&=(const Bitset& obj) {
+
+		for (size_t index = 0; index < N; index++) {
+
+			field[index] &= obj.field[index];
+
+		}
+
+		return *this;
+
+	}
+
+
 };
 
 int main() {
 
 	Bitset<32> e(1435);
+	Bitset<32> a(1337);
 	for (int i = 0; i < 32; i++) {
-		cout << e.field[i] << " ";
+		cout << e.field[i];
 	}
+	cout << endl;
+	bitset<32> yeye(1435);
+	bitset<32> eeee(1337);
+	cout << yeye << endl;
+
+	
+	yeye &= eeee;
+	cout << yeye << endl;
+	e &= a;
+	for (int i = 0; i < 32; i++) {
+		cout << e.field[i];
+	}
+	cout << endl;
 
 	return 0;
 }
