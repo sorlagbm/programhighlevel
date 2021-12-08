@@ -40,8 +40,6 @@ public:
 			begin++; end--;
 		}
 
-		
-
 	}
 
 	void construct(unsigned long long value) {
@@ -92,6 +90,34 @@ public:
 
 	}
 
+	Bitset& operator<<=(size_t pos) {
+
+		int e = number();
+		e <<= pos;
+		Bitset<N> copy(e);
+		for (size_t index = 0; index < N; index++) {
+
+			field[index] = copy.field[index];
+
+		}
+		return *this;
+
+	}
+
+	Bitset& operator>>=(size_t pos) {
+
+		int e = number();
+		e >>= pos;
+		Bitset<N> copy(e);
+		for (size_t index = 0; index < N; index++) {
+
+			field[index] = copy.field[index];
+
+		}
+		return *this;
+
+	}
+
 };
 
 int main() {
@@ -117,6 +143,22 @@ int main() {
 	yeye |= eeee;
 	cout << yeye << endl;
 	e |= a;
+	for (int i = 0; i < 32; i++) {
+		cout << e.field[i];
+	}
+	cout << endl;
+
+	yeye <<= 5;
+	cout << yeye << endl;
+	e <<= 5;
+	for (int i = 0; i < 32; i++) {
+		cout << e.field[i];
+	}
+	cout << endl;
+
+	yeye >>= 5;
+	cout << yeye << endl;
+	e >>= 5;
 	for (int i = 0; i < 32; i++) {
 		cout << e.field[i];
 	}
