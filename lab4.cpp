@@ -80,6 +80,17 @@ public:
 
 	}
 
+	Bitset& operator|=(const Bitset& obj) {
+
+		for (size_t index = 0; index < N; index++) {
+
+			field[index] |= obj.field[index];
+
+		}
+
+		return *this;
+
+	}
 
 };
 
@@ -95,10 +106,17 @@ int main() {
 	bitset<32> eeee(1337);
 	cout << yeye << endl;
 
-	
 	yeye &= eeee;
 	cout << yeye << endl;
 	e &= a;
+	for (int i = 0; i < 32; i++) {
+		cout << e.field[i];
+	}
+	cout << endl;
+
+	yeye |= eeee;
+	cout << yeye << endl;
+	e |= a;
 	for (int i = 0; i < 32; i++) {
 		cout << e.field[i];
 	}
