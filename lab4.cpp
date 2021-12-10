@@ -3,7 +3,7 @@
 #include <set>
 #include <fstream>
 using namespace std;
-
+ 
 template<size_t N>
 class Bitset {
 
