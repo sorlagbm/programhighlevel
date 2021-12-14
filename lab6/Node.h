@@ -12,16 +12,13 @@ private:
 public:
 
 	~Node() {
-		delete prev;
-		delete next;
+		
 	}
 	Node() : data{}, next(NODE_NULL),
 		prev(NODE_NULL) {}
-	explicit Node(const T& data, Node<T>* _nextNode = NODE_NULL,
-		Node<T>* _prevNode = NODE_NULL) {
+	Node(const T& data) {
 		this->data = data;
-		this->next = _nextNode; 
-		this->prev = _prevNode;
+		this->next = this->prev = this;
 	}
 	Node(const Node<T>*& node) { this = node; }
 
@@ -51,11 +48,9 @@ void Node<T>::insertAfter(Node<T>* obj) {
 
 template<class T>
 Node<T>* Node<T>::deleteNode() {
-
 	this->prev->next = this->next;
 	this->next->prev = this->prev;
 	return this;
-
 }
 
 template<class T>
@@ -71,4 +66,3 @@ void Node<T>::insertBefore(Node<T>* obj) {
 		obj->next = this;
 	}
 }
-
