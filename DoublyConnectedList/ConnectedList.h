@@ -49,6 +49,7 @@ public:
 
 	size_t size() const { return lenght; }
 	size_t curPos() const { return pos; }
+	bool isEmpty() const { head == NODE_NULL ? true : false; }
 	T& data() { return cur->getData(); }
 
 	bool isEnd() const {
@@ -93,7 +94,20 @@ public:
 
 	}
 
-	void reset(int pos = 0);
+	void reset(int pos = 0) {
+		if (pos == 0) {
+			cur = head;
+			tail = head;
+			this->pos = 0;
+		}
+		else {
+			cur = head->nextNode();
+			this->pos = 1;
+			for (; this->pos != pos; this->pos++) {
+				cur = cur->nextNode();
+			}
+		}
+	}
 	void clear() {
 		Node<T>* _Cur, *_Next;
 
@@ -130,20 +144,4 @@ void ConnectedList<T>::insertAfter(Node<T>* item) {
 		tail = head;
 	}
 
-}
-
-template<class T>
-void ConnectedList<T>::reset(int pos) {
-	if (pos == 0) {
-		cur = head;
-		tail = head;
-		this->pos = 0;
-	}
-	else {
-		cur = head->nextNode();
-		this->pos = 1;
-		for (; this->pos != pos; this->pos++) {
-			cur = cur->nextNode();
-		}
-	}
 }
