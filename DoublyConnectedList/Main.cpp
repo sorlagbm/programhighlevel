@@ -1,26 +1,46 @@
-#include <iostream> 
+#include <iostream>
 #include "ConnectedList.h"
-#include "Money.h"
-#include "Date.h"
-#include <string>
 using namespace std;
 
-int main() {
-	
-	ConnectedList<int> list(256);
-	for (int i = 0; i < 5; i++) {
-		list.insertAfter(NEW(int, i));
-	}
-	for (int i = 0; i < 5; i++) {
-		cout << list.data() << " ";
-		list._next();
-	}
-	list.deleteNode(2);
-	list.reset();
-	cout << endl;
-	for (int i = 0; i < 4; i++) {
-		cout << list.data() << " ";
-		list._next();
-	}
-	return 0;
+template<class T>
+class Queue {
+
+public:
+
+
+
+private:
+
+    
+
+};
+
+int main(){
+
+    ConnectedList<int> e;
+    for (int i = 0; i < 5; i++) {
+
+        e.insertAfter(new Node<int>(i));
+        
+    }
+    cout << e.size() << endl;
+    e.reset();
+    for (int i = 0; i < e.size(); i++) {
+
+        cout << e.data() << endl;
+        e._next();
+
+    }
+    cout << endl;
+    //e.reset();
+    e.pop();
+    e.reset();
+    for (int i = 0; i < e.size(); i++) {
+
+        cout << e.data() << endl;
+        e._next();
+
+    }
+
+    return 0;
 }
