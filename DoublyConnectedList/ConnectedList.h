@@ -49,7 +49,7 @@ public:
 
 	size_t size() const { return lenght; }
 	size_t curPos() const { return pos; }
-	bool isEmpty() const { head == NODE_NULL ? true : false; }
+	bool isEmpty() const { return head == NODE_NULL ? true : false; }
 	T& data() { return cur->getData(); }
 
 	bool isEnd() const {
@@ -97,7 +97,7 @@ public:
 	void reset(int pos = 0) {
 		if (pos == 0) {
 			cur = head;
-			tail = head;
+			//tail = head;
 			this->pos = 0;
 		}
 		else {
@@ -133,7 +133,7 @@ void ConnectedList<T>::insertAfter(Node<T>* item) {
 
 	if (head != NODE_NULL) {
 		tail->insertAfter(item);
-		tail = item;
+		tail = tail->nextNode();
 		lenght += 1;
 	}
 	else {
