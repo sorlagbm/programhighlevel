@@ -52,10 +52,6 @@ public:
 	bool isEmpty() const { return head == NODE_NULL ? true : false; }
 	T& data() { return cur->getData(); }
 
-	bool isEnd() const {
-		return cur == tail ? true : false;
-	}
-
 	void insertAfter(Node<T>* item);
 	void insertAt(Node<T>* item) {
 		Node<T>* newNode;
@@ -91,6 +87,7 @@ public:
 		
 		cur->deleteNode();
 		lenght -= 1;
+		pos -= 1;
 
 	}
 
@@ -141,7 +138,7 @@ void ConnectedList<T>::insertAfter(Node<T>* item) {
 		lenght += 1;
 		pos += 1;
 		cur = head;
-		tail = head;
+		tail = head->nextNode();
 	}
 
 }
