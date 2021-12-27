@@ -3,92 +3,65 @@
 #include <queue>
 #include <algorithm>
 using namespace std;
- 
-class a {
+
+template<class T>
+class Element {
 
 public:
 
-    vector<int> vec;
-    deque<int> deq;
-    
-    size_t step;
-
-    a(int i = 0, int j = 0) {
-
-        vec = vector<int>(i);
-        deq = deque<int>(j);
-
-        step = j / 2;
-
+    //~Element() { data = 0; }
+    Element() : data{} {
+        is2 = data % 2 == 0 ? true : false;
+    }
+    Element(const T& value) : data(value) {
+        is2 = data % 2 == 0 ? true : false;
     }
 
-    void construct_e() {
+    T& value() { return data; }
 
-        for (int i = 0; i < deq.size() / 2; i++) {
+    bool operator==(const Element<T>& _Element) { return is2 == _Element.is2 ? true : false; }
+    Element<T> operator=(const int& _Operand) { data = _Operand; return data; }
+    //Element<T>& operator=(const Element<T>& _Operand) { data = _Operand.data; return data; }
+    bool operator%(const int& _Operand) { data %= _Operand; return data; }
+    operator int() { return data; }
+    bool is2;
 
-            if (deq[i] % 2 == 0) e1.push_back(0);
-            else e1.push_back(1);
+private:
 
-        }
-
-        for (int i = 0; i < 8; i++) {
-
-            if (vec[i] % 2 == 0) vec.push_back(0);
-            else vec.push_back(1);
-
-        }
-
-    }
-
-    void swap_halfs() {
-
-        for (int i = 0; i < vec.size() / 2; i++) {
-
-            int t = vec[i];
-            vec[i] = vec[vec.size() - i - 1];
-            vec[vec.size() - i - 1] = t;
-
-        }
-
-    }
-
-    vector<int> e1;
-    vector<int> e2;
+    T data;
 
 };
-int main()
-{
 
-    a v(8, 6);
-    v.vec[0] = 11;
-    v.vec[1] = 14;
-    v.vec[2] = 15;
-    v.vec[3] = 16;
-    v.vec[4] = 17;
-    v.vec[5] = 17;
-    v.vec[6] = 18;
-    v.vec[7] = 10;
+int main() {
 
-    v.deq[0] = 1;
-    v.deq[1] = 2;
-    v.deq[2] = 3;
-    v.deq[3] = 4;
-    v.deq[4] = 5;
-    v.deq[5] = 6;
+    vector<Element<int>> vec(8);
+    deque<Element<int>> deq(6);
 
-    v.construct_e();
-    
-        
-    //v.vec.erase(search(v.e1.begin(), next(v.e1.begin(), v.e2.size()), v.e2.begin(), v.e2.end()));
+    vec[0] = Element<int>(11); // 0 1 0 1 0 0 1 1
+    vec[1] = Element<int>(14); // 0 1 0
+    vec[2] = Element<int>(15);
+    vec[3] = Element<int>(16);
+    vec[4] = Element<int>(17);
+    vec[5] = Element<int>(17);
+    vec[6] = Element<int>(18);
+    vec[7] = Element<int>(10);
 
-    //reverse(v.vec.begin(), v.vec.end());
-    vector<int>::iterator a = prev((find_end(v.vec.begin(), v.vec.end(), v.e1.begin(), v.e1.end())), v.vec.size() / 2);
-    v.vec.erase(a, next(a, v.e1.size()));
-    //reverse(v.vec.begin(), v.vec.end());
-    v.vec.erase(next(v.vec.begin(), v.vec.size() / 2 - 1), v.vec.end());
-    for (a = v.vec.begin(); a != v.vec.end(); ++a) {
-        cout << *a << " ";
-    }
-    //cout << *a;
+    deq[0] = Element<int>(1);
+    deq[1] = Element<int>(2);
+    deq[2] = Element<int>(3);
+    deq[3] = Element<int>(4);
+    deq[4] = Element<int>(5);
+    deq[5] = Element<int>(6);
+
+    deq.erase(deq.begin() + deq.size() / 2, deq.end());
+    cout << deq[2] << endl;
+
+    auto a = search(vec.rbegin(), vec.rend(), deq.rbegin(), deq.rend());
+
+    vec.erase(prev(next(a).base(), 2), next(a).base());
+
+    for (auto i : vec)
+        cout << i << " ";
+
     return 0;
 }
