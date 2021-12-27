@@ -58,7 +58,7 @@ int main() {
 
     auto a = search(vec.rbegin(), vec.rend(), deq.rbegin(), deq.rend());
 
-    vec.erase(prev(next(a).base(), 2), next(a).base());
+    vec.erase(prev(next(a).base(), 2), next(next(a).base()));
 
     for (auto i : vec)
         cout << i << " ";
