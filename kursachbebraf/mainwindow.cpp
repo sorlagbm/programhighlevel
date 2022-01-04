@@ -22,6 +22,8 @@ bool isChanged;
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow){
 
     ui->setupUi(this);
+    connect(ui->centralwidget, SIGNAL(customContextMenuRequested(QPoint)), this,
+              SLOT(showContextMenu(QPoint)));
     infoFile = new QFile("infoFile.tmp");
     if(infoFile->size() == 0){
 
@@ -279,7 +281,7 @@ void MainWindow::on_actionDelete_by_id_triggered(){
             _queue[ui->tabWidget->currentIndex()].curWid->setItem(i, 1, work);
 
         }
-        _queue[ui->tabWidget->currentIndex()].curFile->isChanged = true;
+
 }
 
 void MainWindow::on_actionAdd_User_triggered(){
@@ -324,10 +326,11 @@ void MainWindow::on_actionAdd_User_triggered(){
         QTableWidgetItem *work = new QTableWidgetItem;
         work->setText(_queue[ui->tabWidget->currentIndex()].get_work(_queue[ui->tabWidget->currentIndex()].get_size() - 1));
         _queue[ui->tabWidget->currentIndex()].curWid->setItem(q_rows - 1, 1, work);
+        _queue[ui->tabWidget->currentIndex()].curFile->isChanged = true;
 
 
     }
-    _queue[ui->tabWidget->currentIndex()].curFile->isChanged = true;
+    else _queue[ui->tabWidget->currentIndex()].curFile->isChanged = false;
 
 }
 
@@ -762,7 +765,7 @@ void MainWindow::on_actionaddtab_triggered(){
     tabCount += 1;
     ui->tabWidget->setTabText(ui->tabWidget->count() - 1, "New file");
     _queue[ui->tabWidget->count() - 1].curFile->isChanged = false;
-    _queue[ui->tabWidget->count() - 1].curWid->setContextMenuPolicy(Qt::CustomContextMenu);
+    //_queue[ui->tabWidget->count() - 1].curWid->setContextMenuPolicy(Qt::CustomContextMenu);
 
 }
 
@@ -900,6 +903,7 @@ void MainWindow::on_tabWidget_tabCloseRequested(int index){
                     fileName = QFileDialog::getSaveFileName(this, "*.bin");
                     if (fileName.isEmpty()) return;
                     MainWindow::setWindowTitle(fileName);
+
                     _queue[index].curFile->file = new QFile(fileName);
                     _queue[index].curFile->fileName = fileName;
                     _queue[index].curFile->file->open(QIODevice::WriteOnly | QIODevice::Truncate);
@@ -1001,15 +1005,21 @@ void MainWindow::on_tabWidget_tabCloseRequested(int index){
             ui->tableWidget->setColumnCount(q_cols);
 
             MainWindow::setWindowTitle("New file");
-            _queue[0] = Queue(0, new Queue::FileWork(nullptr), ui->tableWidget, 0);
+            //_queue[0] = Queue(0, new Queue::FileWork(nullptr), ui->tableWidget, 0);
+            _queue[0]._resize(0);
+            _queue[0].curFile = nullptr;
+            _queue[0].curFile = new Queue::FileWork(nullptr, "");
+            _queue[0].curWid = ui->tableWidget;
+            _queue[0].q_rows = 0;
             _queue[0].curWid->setColumnCount(q_cols);
             _queue[0].curWid->setRowCount(0);
 
             _queue[0]._clear();
-            _queue[0].curFile->file = new QFile(fileName);
-            _queue[0].curFile->fileName = fileName;
-            _queue[0].curWid = ui->tableWidget;
+            //_queue[0].curFile->file = new QFile(fileName);
+            //_queue[0].curFile->fileName = fileName;
+            //_queue[0].curWid = ui->tableWidget;
             _queue[0].curFile->isChanged = false;
+            ui->tabWidget->setTabText(ui->tabWidget->currentIndex(), "New file");
 
         }
 
@@ -1159,7 +1169,7 @@ void MainWindow::on_MainWindow_customContextMenuRequested(const QPoint &pos)
     menu.addAction("Извлечь по виду деятельности", this, SLOT(on_read_triggered()));
     menu.addAction("Отказ от места", this, SLOT(on_actionDenie_triggered()));
 
-    menu.exec(_queue[ui->tabWidget->currentIndex()].curWid->viewport()->mapToGlobal(pos));
+    menu.exec(QCursor::pos());
 
 }
 
@@ -1172,7 +1182,7 @@ void MainWindow::on_tabWidget_customContextMenuRequested(const QPoint &pos)
     menu.addAction("Извлечь по виду деятельности", this, SLOT(on_read_triggered()));
     menu.addAction("Отказ от места", this, SLOT(on_actionDenie_triggered()));
 
-    menu.exec(_queue[ui->tabWidget->currentIndex()].curWid->viewport()->mapToGlobal(pos));
+    menu.exec(QCursor::pos());
 }
 
 void MainWindow::on_tableWidget_customContextMenuRequested(const QPoint &pos)
@@ -1184,5 +1194,10 @@ void MainWindow::on_tableWidget_customContextMenuRequested(const QPoint &pos)
     menu.addAction("Извлечь по виду деятельности", this, SLOT(on_read_triggered()));
     menu.addAction("Отказ от места", this, SLOT(on_actionDenie_triggered()));
 
-    menu.exec(_queue[ui->tabWidget->currentIndex()].curWid->viewport()->mapToGlobal(pos));
+    menu.exec(QCursor::pos());
+}
+
+void MainWindow::on_tabWidget_tabBarClicked(int index)
+{
+
 }
