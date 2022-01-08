@@ -31,10 +31,11 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
         connect(startScreen, &StartScreen::mainWindow_openFile, this, &MainWindow::show);
         connect(startScreen, &StartScreen::mainWindow_newFile, this, &MainWindow::show);
         startScreen->setWindowTitle("Kursovaya Rabota LVL2");
+
         if(startScreen->exec() == QDialog::Accepted){
 
             fileName = QFileDialog::getOpenFileName(this, "*.bin");
-            if (fileName.isEmpty()) return;
+            if (!fileName.isEmpty()){
             MainWindow::setWindowTitle(fileName);
 
             _queue[0] = Queue(0, new Queue::FileWork(new QFile(fileName), fileName), ui->tableWidget, 0);
@@ -93,8 +94,18 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
             _queue[0] = Queue(0, new Queue::FileWork(nullptr), ui->tableWidget, 0);
             _queue[0].curWid->setColumnCount(q_cols);
             _queue[0].curWid->setRowCount(0);
-             ui->tabWidget->setTabText(0, _queue[0].curFile->fileName);
+             ui->tabWidget->setTabText(0, "New File");
+             _queue[ui->tabWidget->currentIndex()].curFile->isChanged = false;
 
+        }
+        }
+        else{
+            MainWindow::setWindowTitle("New file");
+            _queue[0] = Queue(0, new Queue::FileWork(nullptr), ui->tableWidget, 0);
+            _queue[0].curWid->setColumnCount(q_cols);
+            _queue[0].curWid->setRowCount(0);
+             ui->tabWidget->setTabText(0, "New File");
+             _queue[ui->tabWidget->currentIndex()].curFile->isChanged = false;
         }
 
     }
@@ -281,6 +292,7 @@ void MainWindow::on_actionDelete_by_id_triggered(){
             _queue[ui->tabWidget->currentIndex()].curWid->setItem(i, 1, work);
 
         }
+        _queue[ui->tabWidget->currentIndex()].curFile->isChanged = true;
 
 }
 
@@ -944,7 +956,7 @@ void MainWindow::on_tabWidget_tabCloseRequested(int index){
             ui->tableWidget->setRowCount(0);
             ui->tableWidget->setColumnCount(q_cols);
             fileName = QFileDialog::getOpenFileName(this, "*.bin");
-            if (fileName.isEmpty()) return;
+            if (!fileName.isEmpty()){
             MainWindow::setWindowTitle(fileName);
 
             _queue[0]._clear();
@@ -998,6 +1010,15 @@ void MainWindow::on_tabWidget_tabCloseRequested(int index){
 
             _queue[0].curFile->file->close();
             _queue[0].curFile->isChanged = false;
+            }
+            else{
+                MainWindow::setWindowTitle("New file");
+                _queue[0] = Queue(0, new Queue::FileWork(nullptr), ui->tableWidget, 0);
+                _queue[0].curWid->setColumnCount(q_cols);
+                _queue[0].curWid->setRowCount(0);
+                 ui->tabWidget->setTabText(0, "New File");
+                 _queue[ui->tabWidget->currentIndex()].curFile->isChanged = false;
+            }
         }
         else{
             ui->tableWidget->clear();
@@ -1021,6 +1042,7 @@ void MainWindow::on_tabWidget_tabCloseRequested(int index){
             _queue[0].curFile->isChanged = false;
             ui->tabWidget->setTabText(ui->tabWidget->currentIndex(), "New file");
 
+
         }
 
     }
@@ -1029,7 +1051,7 @@ void MainWindow::on_tabWidget_tabCloseRequested(int index){
 void merge(vector<Queue>& c, vector<Queue> a, vector<Queue> b, int id){
 
 
-    static const std::size_t STEP(1);
+    static const size_t STEP(1);
     vector<Queue::User>::const_iterator bIt = b[0]._queue.begin();
     for(vector<Queue::User>::const_iterator aIt = a[id]._queue.begin();
         aIt != a[id]._queue.end(); ++aIt)
@@ -1128,13 +1150,38 @@ void MainWindow::on_read_triggered(){
                             tr("Работа:"), QLineEdit::Normal,
                             "", new bool());
 
+    QString data;
+    data = QInputDialog::getText(this, tr("Количество удаляемых пользователей"),
+                            tr("Количество удаляемых пользователей:"), QLineEdit::Normal,
+                            "", new bool());
+    unsigned c = 0;
     for(int i = 0; i < _queue[ui->tabWidget->currentIndex()].get_size(); i++){
 
         if(text == _queue[ui->tabWidget->currentIndex()].get_work(i)){
 
+            c += 1;
+
+        }
+
+    }
+    unsigned n;
+    if(data.isEmpty()) n = c;
+    if(data.toUInt() > c) QMessageBox::information(this, "Выход за пределы", "Выход за пределы");
+    else n = c - data.toUInt() + 1;
+
+
+    int y = 0;
+    for(int i = 0; i < _queue[ui->tabWidget->currentIndex()].get_size(); i++){
+
+        if(text == _queue[ui->tabWidget->currentIndex()].get_work(i)){
+
+            if(y != n){
             _queue[ui->tabWidget->currentIndex()]._erase(i);
             i -= 1;
             qDebug() << i;
+            y += 1;
+            }
+            else break;
 
         }
 
@@ -1197,7 +1244,4 @@ void MainWindow::on_tableWidget_customContextMenuRequested(const QPoint &pos)
     menu.exec(QCursor::pos());
 }
 
-void MainWindow::on_tabWidget_tabBarClicked(int index)
-{
 
-}
